@@ -1,5 +1,6 @@
 package benicio.solucoes.parkingcampeao;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -9,10 +10,13 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import java.util.Collections;
 import java.util.List;
 
+import benicio.solucoes.parkingcampeao.adapter.AdapterVeiculo;
 import benicio.solucoes.parkingcampeao.databinding.ActivityListVeiculosBinding;
 import benicio.solucoes.parkingcampeao.databinding.ActivityMainBinding;
 import benicio.solucoes.parkingcampeao.model.VeiculoModel;
@@ -22,6 +26,7 @@ public class ListVeiculosActivity extends AppCompatActivity {
 
     private ActivityListVeiculosBinding mainBinding;
     private List<VeiculoModel> listaVeiculos;
+    private AdapterVeiculo adapterVeiculo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +35,21 @@ public class ListVeiculosActivity extends AppCompatActivity {
         setContentView(mainBinding.getRoot());
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         listaVeiculos = VeiculoUtils.returnListVeiculos(this);
         Collections.reverse(listaVeiculos);
 
+        mainBinding.rvVeiculos.setLayoutManager(new LinearLayoutManager(this));
+        mainBinding.rvVeiculos.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mainBinding.rvVeiculos.setHasFixedSize(true);
+        adapterVeiculo = new AdapterVeiculo(this, listaVeiculos);
+        mainBinding.rvVeiculos.setAdapter(adapterVeiculo);
+
+        mainBinding.btnVoltar.setOnClickListener(v -> {
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+        });
 
     }
 }

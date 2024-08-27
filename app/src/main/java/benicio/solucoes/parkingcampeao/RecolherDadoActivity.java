@@ -186,7 +186,7 @@ public class RecolherDadoActivity extends AppCompatActivity {
         out.write(EscPosBase.alignLeft());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
-        out.write("Nao nos responsabilizamos por obejtos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
+        out.write("Nao nos responsabilizamos por objetos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
         out.write("TOLERANCIA DE 10 MINUTOS".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());

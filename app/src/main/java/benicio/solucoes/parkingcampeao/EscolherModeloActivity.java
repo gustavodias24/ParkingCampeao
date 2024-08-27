@@ -51,7 +51,6 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                     Intent i = new Intent(this, RecolherDadoActivity.class);
                     i.putExtra("tipo", tipo);
                     i.putExtra("placa", placa);
-                    finish();
                     startActivity(i);
                 }else{
                     Toast.makeText(this, "Digite a placa do veículo", Toast.LENGTH_SHORT).show();

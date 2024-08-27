@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
+        mainBinding.btnRegistros.setOnClickListener(v -> startActivity(
+                new Intent(this, ListVeiculosActivity.class)));
+
         mainBinding.btnEntrar.setOnClickListener(v -> {
             String login, senha;
             login = mainBinding.inputUsuario.getText().toString();

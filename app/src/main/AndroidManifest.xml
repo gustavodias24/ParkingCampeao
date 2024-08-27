@@ -26,6 +26,9 @@
         android:theme="@style/Theme.ParkingCampeao"
         tools:targetApi="31">
         <activity
+            android:name=".VerImagensActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListVeiculosActivity"
             android:exported="false" />
         <activity

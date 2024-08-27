@@ -13,22 +13,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="8dp"
-        tools:context=".ListVeiculosActivity">
-
-        <Button
-            android:id="@+id/btn_voltar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/amarelo"
-            android:text="voltar para o menu"
-            android:layout_marginBottom="16dp"
-            android:textAllCaps="true"
-            android:textColor="#000000"
-            android:textStyle="bold" />
+        tools:context=".VerImagensActivity">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_veiculos"
+            android:id="@+id/rv_imagens"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

@@ -24,6 +24,17 @@ public class VeiculoModel {
         this.operador = operador;
     }
 
+    @Override
+    public String toString() {
+        return
+                "Status: " + status + '\n' +
+                        "Tipo: " + tipo + '\n' +
+                        "Placa: " + placa + '\n' +
+                        "Data Entrada: " + dataEntrada + '\n' +
+                        "Data Saida: " + dataSaida + '\n' +
+                        "Operador: " + operador;
+    }
+
     public static String normalize(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
