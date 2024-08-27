@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:fillViewport="true">
 
     <LinearLayout
@@ -22,87 +23,70 @@
             app:srcCompat="@drawable/banner1" />
 
         <ImageView
-            android:id="@+id/image_tipo_escolhido"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:layout_marginTop="8dp"
-            app:srcCompat="@drawable/outros" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             app:srcCompat="@drawable/titletirarfoto" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/foto1"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="120dp"
-                android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/un" />
 
             <ImageButton
                 android:id="@+id/foto2"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="120dp"
-                android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/dois" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/foto3"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="120dp"
-                android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/tres" />
 
             <ImageButton
                 android:id="@+id/foto4"
-                android:layout_width="100dp"
+                android:layout_width="130dp"
                 android:layout_height="120dp"
-                android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/quatro" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imageView3"
+        <ImageButton
+            android:id="@+id/btn_imprimir"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/digiteplacatitle" />
+            android:layout_marginTop="16dp"
+            android:background="#00FFFFFF"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/imprimir" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxStrokeColor="#000000">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputPlaca"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Placa"
-                android:textAllCaps="true" />
-        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 </ScrollView>

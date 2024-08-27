@@ -35,7 +35,15 @@ public class MainActivity extends AppCompatActivity {
         );
 
         mainBinding.btnEntrar.setOnClickListener(v -> {
-            startActivity(new Intent(this, EscolherModeloActivity.class));
+            String login, senha;
+            login = mainBinding.inputUsuario.getText().toString();
+            senha = mainBinding.inputSenha.getText().toString();
+
+            if (login.equals("adm") && senha.equals("adm@321")) {
+                startActivity(new Intent(this, AdminActivity.class));
+            } else {
+                startActivity(new Intent(this, EscolherModeloActivity.class));
+            }
         });
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)

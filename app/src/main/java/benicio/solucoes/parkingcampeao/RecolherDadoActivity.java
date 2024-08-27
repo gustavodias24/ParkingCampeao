@@ -1,12 +1,24 @@
 package benicio.solucoes.parkingcampeao;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +27,26 @@ import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+
+import java.nio.charset.StandardCharsets;
 
 import benicio.solucoes.parkingcampeao.databinding.ActivityRecolherDadoBinding;
+import benicio.solucoes.parkingcampeao.model.VeiculoModel;
+import benicio.solucoes.parkingcampeao.model.VeiculoUtils;
 
 public class RecolherDadoActivity extends AppCompatActivity {
+
+    private SharedPreferences sharedPreferences;
+
+    private static final int REQUEST_ENABLE_BT = 100;
+    private BluetoothDevice printerBluetooth;
 
     private ActivityRecolherDadoBinding mainBinding;
     private Bundle b;
@@ -29,11 +54,17 @@ public class RecolherDadoActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private int fotoID;
 
+    private String tipo, placa;
+
+    private VeiculoModel veiculoModel = new VeiculoModel();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainBinding = ActivityRecolherDadoBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
+
+        sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
 
         mainBinding.foto1.setOnClickListener(v -> {
             dispatchTakePictureIntent();
@@ -58,27 +89,174 @@ public class RecolherDadoActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
         b = getIntent().getExtras();
+        tipo = Objects.requireNonNull(b).getString("tipo", "");
+        placa = Objects.requireNonNull(b).getString("placa", "");
+        veiculoModel.setTipo(tipo);
+        veiculoModel.setPlaca(placa);
 
-        switch (Objects.requireNonNull(b).getString("tipo", "")) {
-            case "moto":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.moto);
-                break;
-            case "grande":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.grande);
-                break;
-            case "carro":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.carro);
-                break;
-            case "caminhao":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.caminhao);
-                break;
-            case "carreta":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.carreta);
-                break;
-            case "outros":
-                mainBinding.imageTipoEscolhido.setImageResource(R.drawable.outros);
-                break;
+
+        mainBinding.btnImprimir.setOnClickListener(v -> {
+            try {
+                imprimir((ImageButton) v);
+            } catch (Exception e) {
+                Toast.makeText(this, "Erro ao executar impressao\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void iniciarImpressora(OutputStream out) throws IOException {
+        out.write(EscPosBase.init_printer());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i("Request", new StringBuilder().append("Request Result, permissions: ")
+                .append(permissions[0])
+                .append(" grantResults: ")
+                .append(grantResults[0]).toString());
+    }
+
+    @SuppressLint("MissingPermission")
+    private void acharPrinterBluetooth() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth não foi encontrado ou não disponível neste equipamento.", Toast.LENGTH_SHORT).show();
+            // Device doesn't support Bluetooth
+            return;
         }
+
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+        Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
+        for (BluetoothDevice bondedDevice : bondedDevices) {
+            if (bondedDevice.getName().toLowerCase().contains("print")) {
+                printerBluetooth = bondedDevice;
+                break;
+            }
+        }
+    }
+
+    @SuppressLint({"MissingPermission", "SimpleDateFormat"})
+    private void imprimir(ImageButton view) throws Exception {
+        if (printerBluetooth == null)
+            acharPrinterBluetooth();
+        if (printerBluetooth == null)
+            return;
+
+        BluetoothSocket impressora = printerBluetooth.createInsecureRfcommSocketToServiceRecord(UUID.randomUUID());
+
+        impressora.connect();
+        try {
+            view.setEnabled(false);
+            view.setImageResource(R.drawable.imprimindo);
+
+            iniciarImpressora(impressora.getOutputStream());
+
+            imprimirImagemLogoCentralizado(impressora.getOutputStream());
+            imprimirDocumento(impressora.getOutputStream());
+            imprimirAgradecimento(impressora.getOutputStream());
+
+            avancarLinhasFinalizarImpressao(impressora.getOutputStream());
+
+            veiculoModel.setDataEntrada(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()));
+            veiculoModel.setOperador(sharedPreferences.getString("operador", ""));
+            List<VeiculoModel> listaVeiculos = VeiculoUtils.returnListVeiculos(this);
+            listaVeiculos.add(veiculoModel);
+            VeiculoUtils.saveListVeiculos(this, listaVeiculos);
+            Toast.makeText(this, "Veículo cadastrado", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(new Intent(this, ListVeiculosActivity.class));
+        } finally {
+            view.setEnabled(true);
+            impressora.close();
+        }
+    }
+
+    private void avancarLinhasFinalizarImpressao(OutputStream out) throws IOException {
+        out.write(EscPosBase.nextLine(3));
+        out.flush();
+    }
+
+    private void imprimirAgradecimento(OutputStream out) throws IOException {
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.nextLine());
+        out.write("Nao nos responsabilizamos por obejtos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.nextLine());
+        out.write("TOLERANCIA DE 10 MINUTOS".getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.nextLine());
+        out.write("================================".getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.nextLine());
+        out.flush();
+
+    }
+
+    private void imprimirDocumento(OutputStream out) throws IOException {
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String empresaString = "Empresa: " + VeiculoModel.normalize(sharedPreferences.getString("nome", ""));
+        out.write(empresaString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String enderecoString = "Endereco: " + VeiculoModel.normalize(sharedPreferences.getString("endereco", ""));
+        out.write(enderecoString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String cnpjString = "CNPJ: " + VeiculoModel.normalize(sharedPreferences.getString("cnpj", ""));
+        out.write(cnpjString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String foneString = "Fone: " + VeiculoModel.normalize(sharedPreferences.getString("telefone", ""));
+        out.write(foneString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.alignLeft());
+        out.write(EscPosBase.nextLine());
+        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignCenter());
+        out.write("ENTRADA".getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String veiculoString = "Veiculo: " + placa;
+        out.write(veiculoString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        @SuppressLint("SimpleDateFormat") String dataString = "Data: " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+        out.write(dataString.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String operadorString = "Operador: " + VeiculoModel.normalize(sharedPreferences.getString("operador", ""));
+        out.write(operadorString.getBytes(StandardCharsets.UTF_8));
+
+        out.flush();
+    }
+
+    private void imprimirImagemLogoCentralizado(OutputStream out) throws IOException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inTargetDensity = 100;
+        options.inDensity = 100;
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.logoimprimir, options);
+        byte[] logoImpressaobyte = PrinterConverter.bitmapToBytes(bitmap);
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignCenter());
+        out.write(logoImpressaobyte);
+        out.write(EscPosBase.alignLeft());
+        out.write(EscPosBase.nextLine());
+        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -86,6 +264,9 @@ public class RecolherDadoActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(new File(currentPhotoPath));
+
+            veiculoModel.getListaFotos().add(imageUri.toString());
+
             switch (fotoID) {
                 case 1:
                     mainBinding.foto1.setImageURI(imageUri);

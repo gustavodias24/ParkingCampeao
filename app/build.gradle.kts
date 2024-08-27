@@ -15,7 +15,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
     buildTypes {
@@ -34,6 +34,8 @@ android {
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     implementation(libs.appcompat)
     implementation(libs.material)
