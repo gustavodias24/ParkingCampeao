@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -88,7 +87,6 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
             veiculoModel.setValorTempoPago(tempoEPreco);
 
             List<VeiculoModel> listaExistente = VeiculoUtils.returnListVeiculos(c);
-            Collections.reverse(listaExistente);
 
             listaExistente.get(position).setStatus("Concluído");
             listaExistente.get(position).setDataSaida(dataConclusao);
