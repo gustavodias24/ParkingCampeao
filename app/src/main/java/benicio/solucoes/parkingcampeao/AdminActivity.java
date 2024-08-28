@@ -45,6 +45,7 @@ public class AdminActivity extends AppCompatActivity {
             editor.putString("telefone", mainBinding.telefone.getText().toString()).apply();
             editor.putString("operador", mainBinding.operador.getText().toString()).apply();
             editor.putString("valorhora", mainBinding.valorhora.getText().toString()).apply();
+            editor.putString("tolerancia", mainBinding.valorTolerancia.getText().toString()).apply();
 
 
             Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
@@ -59,5 +60,6 @@ public class AdminActivity extends AppCompatActivity {
         mainBinding.telefone.setText(sharedPreferences.getString("telefone", ""));
         mainBinding.operador.setText(sharedPreferences.getString("operador", ""));
         mainBinding.valorhora.setText(sharedPreferences.getString("valorhora", ""));
+        mainBinding.valorTolerancia.setText(sharedPreferences.getString("tolerancia", ""));
     }
 }

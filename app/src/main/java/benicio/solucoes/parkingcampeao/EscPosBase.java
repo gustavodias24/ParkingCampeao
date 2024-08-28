@@ -125,9 +125,10 @@ public class EscPosBase {
         return EscPosBase.TEXT_SIZE_NORMAL;
     }
 
-    protected static byte[] getFontTall() {
+    public static byte[] getFontTall() {
         return EscPosBase.TEXT_SIZE_DOUBLE_HEIGHT;
     }
+
 
 //    protected static byte[] getFontBig() {
 //        return EscPosBase.TEXT_SIZE_BIG;

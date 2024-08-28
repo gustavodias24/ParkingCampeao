@@ -104,10 +104,6 @@ public class RecolherDadoActivity extends AppCompatActivity {
         });
     }
 
-    private void iniciarImpressora(OutputStream out) throws IOException {
-        out.write(EscPosBase.init_printer());
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -154,16 +150,11 @@ public class RecolherDadoActivity extends AppCompatActivity {
             view.setEnabled(false);
             view.setImageResource(R.drawable.imprimindo);
 
-            iniciarImpressora(impressora.getOutputStream());
-
-            imprimirImagemLogoCentralizado(impressora.getOutputStream());
-            imprimirDocumento(impressora.getOutputStream());
-            imprimirAgradecimento(impressora.getOutputStream());
-
-            avancarLinhasFinalizarImpressao(impressora.getOutputStream());
-
             veiculoModel.setDataEntrada(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()));
             veiculoModel.setOperador(sharedPreferences.getString("operador", ""));
+
+            VeiculoModel.imprimirEntrada(impressora.getOutputStream(), this, sharedPreferences, veiculoModel);
+
             List<VeiculoModel> listaVeiculos = VeiculoUtils.returnListVeiculos(this);
             listaVeiculos.add(veiculoModel);
             VeiculoUtils.saveListVeiculos(this, listaVeiculos);
@@ -176,88 +167,6 @@ public class RecolherDadoActivity extends AppCompatActivity {
         }
     }
 
-    private void avancarLinhasFinalizarImpressao(OutputStream out) throws IOException {
-        out.write(EscPosBase.nextLine(3));
-        out.flush();
-    }
-
-    private void imprimirAgradecimento(OutputStream out) throws IOException {
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
-        out.write(EscPosBase.nextLine());
-        out.write("Nao nos responsabilizamos por objetos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
-        out.write(EscPosBase.nextLine());
-        out.write("TOLERANCIA DE 10 MINUTOS".getBytes(StandardCharsets.UTF_8));
-        out.write(EscPosBase.nextLine());
-        out.write("================================".getBytes(StandardCharsets.UTF_8));
-        out.write(EscPosBase.nextLine());
-        out.flush();
-
-    }
-
-    private void imprimirDocumento(OutputStream out) throws IOException {
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String empresaString = "Empresa: " + VeiculoModel.normalize(sharedPreferences.getString("nome", ""));
-        out.write(empresaString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String enderecoString = "Endereco: " + VeiculoModel.normalize(sharedPreferences.getString("endereco", ""));
-        out.write(enderecoString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String cnpjString = "CNPJ: " + VeiculoModel.normalize(sharedPreferences.getString("cnpj", ""));
-        out.write(cnpjString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String foneString = "Fone: " + VeiculoModel.normalize(sharedPreferences.getString("telefone", ""));
-        out.write(foneString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.alignLeft());
-        out.write(EscPosBase.nextLine());
-        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignCenter());
-        out.write("ENTRADA".getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String veiculoString = "Veiculo: " + placa;
-        out.write(veiculoString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        @SuppressLint("SimpleDateFormat") String dataString = "Data: " + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
-        out.write(dataString.getBytes(StandardCharsets.UTF_8));
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String operadorString = "Operador: " + VeiculoModel.normalize(sharedPreferences.getString("operador", ""));
-        out.write(operadorString.getBytes(StandardCharsets.UTF_8));
-
-        out.flush();
-    }
-
-    private void imprimirImagemLogoCentralizado(OutputStream out) throws IOException {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inTargetDensity = 100;
-        options.inDensity = 100;
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.logoimprimir, options);
-        byte[] logoImpressaobyte = PrinterConverter.bitmapToBytes(bitmap);
-
-        out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignCenter());
-        out.write(logoImpressaobyte);
-        out.write(EscPosBase.alignLeft());
-        out.write(EscPosBase.nextLine());
-        out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
