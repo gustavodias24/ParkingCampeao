@@ -225,25 +225,24 @@ public class VeiculoModel {
         // Obtém o total de minutos
         long minutosTotal = duracao.toMinutes();
 
-        // Se o tempo de permanência for de x minutos ou menos, não cobra
+        // Se o tempo de permanência for menor ou igual à tolerância, não cobra
         if (minutosTotal <= Integer.parseInt(sharedPreferences.getString("tolerancia", "0"))) {
-            return "Tempo: 0 horas e 0 minutos\nValor R$ 0.0";
+            return "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
         }
 
         // Calcula o total de horas e minutos
         long horas = minutosTotal / 60;
         long minutos = minutosTotal % 60;
 
-        // Preço por hora
-        double precoPorHora = Integer.parseInt(sharedPreferences.getString("valorhora", "0"));
-
-        // Calcula o preço total
-        double precoTotal = (horas + (minutos > 0 ? 1 : 0)) * precoPorHora;
+        // Calcula o preço total: horas cheias + 1 hora adicional se houver minutos
+        double precoTotal = horas * Integer.parseInt(sharedPreferences.getString("valorhora", "0"));;
+        if (minutos > 0) {
+            precoTotal += Integer.parseInt(sharedPreferences.getString("valorhora", "0"));; // Adiciona mais uma hora se houver minutos adicionais
+        }
 
         // Retorna o tempo e o preço
-        return String.format("Tempo: %d horas e %d minutos\nValor R$ %.2f", horas, minutos, precoTotal);
+        return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, precoTotal);
     }
-
 
     @Override
     public String toString() {
