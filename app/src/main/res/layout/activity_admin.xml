@@ -112,10 +112,142 @@
             app:hintTextColor="#000000">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/valorhora"
+                android:id="@+id/horasCobrarMenos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Valor por Hora"
+                android:hint="Quantidade de horas para cobrar menos"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_diaria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Diária"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_mensalidade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Mensalidade"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_moto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Moto"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_grande"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Grande"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_carro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Carro"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_caminhao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Caminhão"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_carreta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Carreta"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:textColorHint="#000000" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/valorhora_outros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Valor por Hora Outros"
                 android:inputType="number|numberDecimal|numberSigned"
                 android:textColorHint="#000000" />
 

@@ -155,6 +155,16 @@ public class RecolherDadoActivity extends AppCompatActivity {
 
             VeiculoModel.imprimirEntrada(impressora.getOutputStream(), this, sharedPreferences, veiculoModel);
 
+            if (mainBinding.checkCobrarMenos.isChecked()) {
+                String valor = mainBinding.novoValor.getText().toString();
+                veiculoModel.setCobrarMenos(true);
+                veiculoModel.setValorMaisBarato(valor.isEmpty() ? 0 : Float.parseFloat(valor));
+            } else if (mainBinding.checkDiaria.isChecked()) {
+                veiculoModel.setDiaria(true);
+            } else if (mainBinding.checkMensalidade.isChecked()) {
+                veiculoModel.setMensalidade(true);
+            }
+
             List<VeiculoModel> listaVeiculos = VeiculoUtils.returnListVeiculos(this);
             listaVeiculos.add(veiculoModel);
             VeiculoUtils.saveListVeiculos(this, listaVeiculos);

@@ -80,7 +80,7 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
 
             @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
 
-            String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoModel.getDataEntrada(), dataConclusao, sharedPreferences);
+            String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoModel.getDataEntrada(), dataConclusao, sharedPreferences, veiculoModel);
 
             veiculoModel.setStatus("Concluído");
             veiculoModel.setDataSaida(dataConclusao);

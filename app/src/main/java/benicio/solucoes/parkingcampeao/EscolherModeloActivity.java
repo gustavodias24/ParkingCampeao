@@ -130,7 +130,7 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
 
             SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
             @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
-            String tempoEPreco = VeiculoModel.calcularTempoEPreco(listaExistente.get(indexGlobal).getDataEntrada(), dataConclusao, sharedPreferences);
+            String tempoEPreco = VeiculoModel.calcularTempoEPreco(listaExistente.get(indexGlobal).getDataEntrada(), dataConclusao, sharedPreferences, listaExistente.get(indexGlobal));
 
             listaExistente.get(indexGlobal).setStatus("Concluído");
             listaExistente.get(indexGlobal).setDataSaida(dataConclusao);

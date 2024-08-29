@@ -78,6 +78,60 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Escolhas Opcionais" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/checkDiaria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cobrar Diária" />
+
+            <RadioButton
+                android:id="@+id/checkMensalidade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Cobrar Mensalidade" />
+            <RadioButton
+                android:id="@+id/checkCobrarMenos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cobrar menos depois de um total de horas" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/novoValor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Novo Valor $"
+                    android:inputType="number|numberDecimal|numberSigned" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RadioButton
+                android:id="@+id/checkPadrao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Padrão" />
+        </RadioGroup>
+
+
         <ImageButton
             android:id="@+id/btn_imprimir"
             android:layout_width="wrap_content"
