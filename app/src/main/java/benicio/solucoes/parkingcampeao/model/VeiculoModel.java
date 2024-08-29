@@ -40,6 +40,7 @@ public class VeiculoModel {
     public static void imprimirSaida(OutputStream out, Activity a, SharedPreferences sharedPreferences, VeiculoModel v) throws IOException {
         out.write(EscPosBase.init_printer());
 
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inTargetDensity = 100;
         options.inDensity = 100;
@@ -52,6 +53,8 @@ public class VeiculoModel {
         out.write(EscPosBase.alignLeft());
         out.write(EscPosBase.nextLine());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.TEXT_WEIGHT_BOLD);
 
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
@@ -147,6 +150,8 @@ public class VeiculoModel {
         out.write(EscPosBase.nextLine());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
 
+        out.write(EscPosBase.TEXT_WEIGHT_BOLD);
+
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
         String empresaString = "Empresa: " + VeiculoModel.normalize(sharedPreferences.getString("nome", ""));
@@ -235,9 +240,11 @@ public class VeiculoModel {
         long minutos = minutosTotal % 60;
 
         // Calcula o preço total: horas cheias + 1 hora adicional se houver minutos
-        double precoTotal = horas * Integer.parseInt(sharedPreferences.getString("valorhora", "0"));;
+        double precoTotal = horas * Integer.parseInt(sharedPreferences.getString("valorhora", "0"));
+        ;
         if (minutos > 0) {
-            precoTotal += Integer.parseInt(sharedPreferences.getString("valorhora", "0"));; // Adiciona mais uma hora se houver minutos adicionais
+            precoTotal += Integer.parseInt(sharedPreferences.getString("valorhora", "0"));
+            ; // Adiciona mais uma hora se houver minutos adicionais
         }
 
         // Retorna o tempo e o preço
