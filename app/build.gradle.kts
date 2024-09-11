@@ -35,7 +35,9 @@ android {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("io.github.vicmikhailau:MaskedEditText:5.0.2")
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -58,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
         }
+
+
+        mainBinding.btnRelatorios.setOnClickListener(v -> startActivity(new Intent(this, RelatorioActivity.class)));
     }
 
     @Override

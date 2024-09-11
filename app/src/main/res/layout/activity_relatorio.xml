@@ -12,13 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity" >
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:srcCompat="@drawable/banner1" />
+        tools:context=".RelatorioActivity" >
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -27,64 +21,66 @@
             app:boxStrokeColor="#000000"
             app:hintTextColor="#000000">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputUsuario"
+            <com.vicmikhailau.maskededittext.MaskedEditText
+                android:id="@+id/inputDataInicial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Usuário"
-                android:textColorHint="#000000" />
+                android:hint="Data Inicial"
+                android:inputType="datetime"
+                android:textColorHint="#000000"
+                app:mask="##/##/####" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             app:boxStrokeColor="#000000"
-            app:hintTextColor="#000000"
-            app:passwordToggleEnabled="true">
+            app:hintTextColor="#000000">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputSenha"
+            <com.vicmikhailau.maskededittext.MaskedEditText
+                android:id="@+id/inputDataFinal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Senha"
-                android:password="true"
-                android:textColorHint="#000000" />
+                android:hint="Data Final"
+                android:inputType="datetime"
+                android:textColorHint="#000000"
+                app:mask="##/##/####" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <Button
-            android:id="@+id/btn_entrar"
+            android:id="@+id/btn_filtrar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/amarelo"
-            android:text="Entrar"
+            android:text="Filtrar"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_registros"
+            android:id="@+id/btn_voltar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/amarelo"
-            android:text="registros de veículos"
+            android:text="Voltar"
             android:textAllCaps="true"
             android:textColor="#000000"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_relatorios"
+        <TextView
+            android:id="@+id/text_resultado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/amarelo"
-            android:text="Relatórios"
-            android:textAllCaps="true"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:text="Esperando filtro..."
             android:textColor="#000000"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
     </LinearLayout>
 </ScrollView>

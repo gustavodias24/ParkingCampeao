@@ -79,7 +79,7 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                 for (int index = 0; index < listaExistente.size(); index++) {
                     indexGlobal = index;
                     VeiculoModel veiculoPlaca = listaExistente.get(index);
-                    if (veiculoPlaca.getPlaca().toLowerCase().equals(placa.toLowerCase())) {
+                    if (veiculoPlaca.getPlaca().toLowerCase().equals(placa.toLowerCase()) && veiculoPlaca.getStatus().equals("Pendente")) {
                         prosseguir = false;
 
                         AlertDialog.Builder b = new AlertDialog.Builder(EscolherModeloActivity.this);

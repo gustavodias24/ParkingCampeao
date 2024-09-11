@@ -36,7 +36,7 @@ public class VeiculoModel {
 
     List<String> listaFotos = new ArrayList<>();
 
-    String valorTempoPago = "Tempo: 0 horas e 0 minutos\nValor R$ 0.0";
+    String valorTempoPago = "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
 
     public VeiculoModel() {
     }
@@ -208,7 +208,8 @@ public class VeiculoModel {
         out.write(EscPosBase.nextLine());
         out.write("Nao nos responsabilizamos por objetos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
-        out.write("TOLERANCIA DE 10 MINUTOS".getBytes(StandardCharsets.UTF_8));
+        String toleranciString = "TOLERANCIA DE "+ sharedPreferences.getString("tolerancia", "0") + " MINUTO(S)";
+        out.write(toleranciString.getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
         out.write("================================".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
@@ -459,5 +460,15 @@ public class VeiculoModel {
 
     public void setValorTempoPago(String valorTempoPago) {
         this.valorTempoPago = valorTempoPago;
+    }
+
+    public float getValorPago() {
+        // Extrai o valor do campo valorTempoPago
+        try{
+            String valorStr = valorTempoPago.split("\n")[1].split(" ")[4].replace(",", ".");
+            return Float.parseFloat(valorStr);
+        }catch (Exception e){
+            return 0;
+        }
     }
 }
