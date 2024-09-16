@@ -1,6 +1,8 @@
 package benicio.solucoes.parkingcampeao;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -21,12 +23,19 @@ import benicio.solucoes.parkingcampeao.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mainBinding;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
+
+        sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        mainBinding.operador.setText(sharedPreferences.getString("operador", ""));
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getWindow().setFlags(
@@ -37,15 +46,19 @@ public class MainActivity extends AppCompatActivity {
         mainBinding.btnRegistros.setOnClickListener(v -> startActivity(
                 new Intent(this, ListVeiculosActivity.class)));
 
-        mainBinding.btnEntrar.setOnClickListener(v -> {
+
+        mainBinding.btnEntrarOperador.setOnClickListener(v -> {
+            editor.putString("operador", mainBinding.operador.getText().toString()).apply();
+            startActivity(new Intent(this, EscolherModeloActivity.class));
+        });
+
+        mainBinding.btnEntrarAdm.setOnClickListener(v -> {
             String login, senha;
             login = mainBinding.inputUsuario.getText().toString();
             senha = mainBinding.inputSenha.getText().toString();
 
             if (login.equals("adm") && senha.equals("adm@321")) {
                 startActivity(new Intent(this, AdminActivity.class));
-            } else {
-                startActivity(new Intent(this, EscolherModeloActivity.class));
             }
         });
 

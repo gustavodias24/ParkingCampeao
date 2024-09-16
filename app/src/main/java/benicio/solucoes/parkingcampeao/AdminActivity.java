@@ -43,7 +43,6 @@ public class AdminActivity extends AppCompatActivity {
             editor.putString("endereco", mainBinding.endereco.getText().toString()).apply();
             editor.putString("cnpj", mainBinding.cnpj.getText().toString()).apply();
             editor.putString("telefone", mainBinding.telefone.getText().toString()).apply();
-            editor.putString("operador", mainBinding.operador.getText().toString()).apply();
             editor.putString("horasCobrarMenos", mainBinding.horasCobrarMenos.getText().toString()).apply();
             editor.putString("valorhoraDiaria", mainBinding.valorhoraDiaria.getText().toString()).apply();
             editor.putString("valorhoraMensalidade", mainBinding.valorhoraMensalidade.getText().toString()).apply();
@@ -66,7 +65,6 @@ public class AdminActivity extends AppCompatActivity {
         mainBinding.endereco.setText(sharedPreferences.getString("endereco", ""));
         mainBinding.cnpj.setText(sharedPreferences.getString("cnpj", ""));
         mainBinding.telefone.setText(sharedPreferences.getString("telefone", ""));
-        mainBinding.operador.setText(sharedPreferences.getString("operador", ""));
         mainBinding.horasCobrarMenos.setText(sharedPreferences.getString("horasCobrarMenos", ""));
         mainBinding.valorhoraDiaria.setText(sharedPreferences.getString("valorhoraDiaria", ""));
         mainBinding.valorhoraMensalidade.setText(sharedPreferences.getString("valorhoraMensalidade", ""));
