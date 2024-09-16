@@ -17,7 +17,6 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             app:boxStrokeColor="#000000"
             app:hintTextColor="#000000">
 

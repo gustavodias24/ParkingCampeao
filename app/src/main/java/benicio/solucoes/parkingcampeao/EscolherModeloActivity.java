@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -60,6 +61,8 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
+
+        mainBinding.inputPlaca.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
         mainBinding.moto.setOnClickListener(this);
         mainBinding.grande.setOnClickListener(this);

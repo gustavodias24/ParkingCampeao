@@ -1,5 +1,6 @@
 package benicio.solucoes.parkingcampeao;
 
+import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,9 +15,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,8 @@ public class RelatorioActivity extends AppCompatActivity {
     private ActivityRelatorioBinding mainBinding;
     DateTimeFormatter formatter;
 
+    Calendar calendar;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +43,49 @@ public class RelatorioActivity extends AppCompatActivity {
         mainBinding = ActivityRelatorioBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
+        calendar = Calendar.getInstance();
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
+
+        mainBinding.inputDataInicial.setOnClickListener(v -> {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(RelatorioActivity.this,
+                    (view, year1, monthOfYear, dayOfMonth) -> {
+                        calendar.set(Calendar.YEAR, year1);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        // Formatar a data escolhida
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        mainBinding.inputDataInicial.setText(sdf.format(calendar.getTime()));
+                    }, year, month, day);
+            datePickerDialog.show();
+        });
+
+        mainBinding.inputDataFinal.setOnClickListener(v -> {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(RelatorioActivity.this,
+                    (view, year1, monthOfYear, dayOfMonth) -> {
+                        calendar.set(Calendar.YEAR, year1);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        // Formatar a data escolhida
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        mainBinding.inputDataFinal.setText(sdf.format(calendar.getTime()));
+                    }, year, month, day);
+            datePickerDialog.show();
+        });
 
         formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 

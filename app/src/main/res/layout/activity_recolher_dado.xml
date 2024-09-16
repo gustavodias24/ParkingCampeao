@@ -19,15 +19,8 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            app:srcCompat="@drawable/banner1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            app:srcCompat="@drawable/titletirarfoto" />
+            app:srcCompat="@drawable/banner1" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,7 +31,7 @@
 
             <ImageButton
                 android:id="@+id/foto1"
-                android:layout_width="130dp"
+                android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
@@ -46,7 +39,7 @@
 
             <ImageButton
                 android:id="@+id/foto2"
-                android:layout_width="130dp"
+                android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
@@ -62,7 +55,7 @@
 
             <ImageButton
                 android:id="@+id/foto3"
-                android:layout_width="130dp"
+                android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
@@ -70,7 +63,7 @@
 
             <ImageButton
                 android:id="@+id/foto4"
-                android:layout_width="130dp"
+                android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
@@ -83,59 +76,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Escolhas Opcionais" />
+            android:text="Opção" />
 
         <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RadioButton
-                android:id="@+id/checkDiaria"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cobrar Diária" />
+            android:layout_height="match_parent"
+            android:layout_weight="2">
 
             <RadioButton
                 android:id="@+id/checkMensalidade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:checked="false"
-                android:text="Cobrar Mensalidade" />
-            <RadioButton
-                android:id="@+id/checkCobrarMenos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Cobrar menos depois de um total de horas" />
+                android:text="O mensalista" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/novoValor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Novo Valor $"
-                    android:inputType="number|numberDecimal|numberSigned" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <RadioButton
-                android:id="@+id/checkPadrao"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Padrão" />
         </RadioGroup>
 
 
         <ImageButton
             android:id="@+id/btn_imprimir"
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_height="90dp"
             android:layout_marginTop="16dp"
             android:background="#00FFFFFF"
             android:scaleType="fitCenter"
