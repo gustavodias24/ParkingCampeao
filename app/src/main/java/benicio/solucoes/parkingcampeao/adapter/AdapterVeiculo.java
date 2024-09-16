@@ -64,7 +64,7 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
         holder.textDetalhes.setText(veiculoModel.toString());
 
         if (!veiculoModel.getStatus().equals("Pendente")) {
-            holder.btnOk.setVisibility(View.GONE);
+//            holder.btnOk.setVisibility(View.GONE);
         }
 
         holder.btnVer.setOnClickListener(v -> {
@@ -76,26 +76,26 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
             );
         });
 
-        holder.btnOk.setOnClickListener(v -> {
-
-            @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
-
-            String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoModel.getDataEntrada(), dataConclusao, sharedPreferences, veiculoModel);
-
-            veiculoModel.setStatus("Concluído");
-            veiculoModel.setDataSaida(dataConclusao);
-            veiculoModel.setValorTempoPago(tempoEPreco);
-
-            List<VeiculoModel> listaExistente = VeiculoUtils.returnListVeiculos(c);
-
-            listaExistente.get(position).setStatus("Concluído");
-            listaExistente.get(position).setDataSaida(dataConclusao);
-            listaExistente.get(position).setValorTempoPago(tempoEPreco);
-
-            VeiculoUtils.saveListVeiculos(c, listaExistente);
-            Toast.makeText(c, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
-            this.notifyDataSetChanged();
-        });
+//        holder.btnOk.setOnClickListener(v -> {
+//
+//            @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+//
+//            String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoModel.getDataEntrada(), dataConclusao, sharedPreferences, veiculoModel);
+//
+//            veiculoModel.setStatus("Concluído");
+//            veiculoModel.setDataSaida(dataConclusao);
+//            veiculoModel.setValorTempoPago(tempoEPreco);
+//
+//            List<VeiculoModel> listaExistente = VeiculoUtils.returnListVeiculos(c);
+//
+//            listaExistente.get(position).setStatus("Concluído");
+//            listaExistente.get(position).setDataSaida(dataConclusao);
+//            listaExistente.get(position).setValorTempoPago(tempoEPreco);
+//
+//            VeiculoUtils.saveListVeiculos(c, listaExistente);
+//            Toast.makeText(c, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
+//            this.notifyDataSetChanged();
+//        });
 
         holder.btnImprimir.setOnClickListener(v -> {
 
@@ -118,12 +118,12 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
     public final class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView textDetalhes;
-        Button btnOk, btnImprimir, btnVer;
+        Button btnImprimir, btnVer;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            btnOk = itemView.findViewById(R.id.concluirVeiculo);
+//            btnOk = itemView.findViewById(R.id.concluirVeiculo);
             btnImprimir = itemView.findViewById(R.id.imprimirVeiculo);
             btnVer = itemView.findViewById(R.id.verVeiculo);
 

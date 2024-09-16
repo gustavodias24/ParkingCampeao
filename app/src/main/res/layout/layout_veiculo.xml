@@ -23,17 +23,6 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/concluirVeiculo"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:backgroundTint="#4CAF50"
-            android:text="concluir"
-            android:textAllCaps="true"
-            android:textStyle="bold"
-            app:icon="@drawable/ok"
-            app:iconGravity="top" />
-
-        <Button
             android:id="@+id/imprimirVeiculo"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
