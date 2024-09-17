@@ -1,10 +1,16 @@
 package benicio.solucoes.parkingcampeao;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,14 +41,35 @@ public class RelatorioActivity extends AppCompatActivity {
     private ActivityRelatorioBinding mainBinding;
     DateTimeFormatter formatter;
 
+    private String filtroString = "Todos";
+
     Calendar calendar;
 
+    @SuppressLint("SimpleDateFormat")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainBinding = ActivityRelatorioBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
+
+        String[] options = {"Todos", "Carro", "Moto", "Grande", "Caminhão", "Carreta"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mainBinding.spinnerOptions.setAdapter(adapter);
+        mainBinding.spinnerOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Mostrar a opção selecionada
+                filtroString = parentView.getItemAtPosition(position).toString();
+                Toast.makeText(RelatorioActivity.this, "Você selecionou: " + filtroString, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
 
         calendar = Calendar.getInstance();
 
@@ -90,9 +118,15 @@ public class RelatorioActivity extends AppCompatActivity {
         formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         mainBinding.btnFiltrar.setOnClickListener(v -> {
+            String dataInicialString = mainBinding.inputDataInicial.getText().toString();
+            String dataFinalString = mainBinding.inputDataFinal.getText().toString();
+
+            if (dataFinalString.isEmpty() && dataInicialString.isEmpty()) {
+                dataFinalString = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+                dataInicialString = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+            }
+
             try {
-                String dataInicialString = mainBinding.inputDataInicial.getText().toString();
-                String dataFinalString = mainBinding.inputDataFinal.getText().toString();
 
                 LocalDateTime dataInicial = LocalDateTime.parse(dataInicialString + " 00:00", formatter);
                 LocalDateTime dataFinal = LocalDateTime.parse(dataFinalString + " 23:59", formatter);
@@ -105,6 +139,12 @@ public class RelatorioActivity extends AppCompatActivity {
                                     (dataEntrada.isEqual(dataFinal) || dataEntrada.isBefore(dataFinal));
                         })
                         .collect(Collectors.toList());
+
+                if (!filtroString.equals("Todos")) {
+                    veiculosFiltrados = veiculosFiltrados.stream().filter(
+                            veiculo -> veiculo.getTipo().equals(filtroString)
+                    ).collect(Collectors.toList());
+                }
 
                 // 1. Contar quantos veículos de cada tipo entraram
                 Map<String, Long> veiculosPorTipo = veiculosFiltrados.stream()
@@ -131,10 +171,18 @@ public class RelatorioActivity extends AppCompatActivity {
                 long cobrarMenosCount = veiculosFiltrados.stream().filter(VeiculoModel::isCobrarMenos).count();
                 float cobrarMenosValor = veiculosFiltrados.stream().filter(VeiculoModel::isCobrarMenos).map(VeiculoModel::getValorPago).reduce(0f, Float::sum);
 
+                Map<String, Long> veiculosPendentesPorTipo = VeiculoUtils.returnListVeiculos(this).stream()
+                        .filter(veiculo -> veiculo.getStatus().equals("Pendente")) // Filtro pelo status "Pendente"
+                        .collect(Collectors.groupingBy(VeiculoModel::getTipo, Collectors.counting())); // Agrupar por tipo e contar
+
+
                 StringBuilder infoBuilder = new StringBuilder();
 
                 infoBuilder.append("<b>Veículos por tipo:</b>").append("<br>");
                 veiculosPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
+
+                infoBuilder.append("<br><b>Veículos que não saíram por tipo:</b>").append("<br>");
+                veiculosPendentesPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
 
                 infoBuilder.append("<br><b>Valor gasto por tipo de veículo:</b>").append("<br>");
                 valorPorTipo.forEach((tipo, valor) -> infoBuilder.append(tipo).append(": R$ ").append(valor).append("<br>"));

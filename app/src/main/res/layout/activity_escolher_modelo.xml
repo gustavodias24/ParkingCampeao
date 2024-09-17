@@ -88,13 +88,12 @@
                 app:srcCompat="@drawable/carreta" />
 
             <ImageButton
-                android:id="@+id/outros"
                 android:layout_width="100dp"
                 android:layout_height="90dp"
                 android:layout_weight="1"
                 android:backgroundTint="#00FFFFFF"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/outros" />
+                 />
         </LinearLayout>
 
         <LinearLayout

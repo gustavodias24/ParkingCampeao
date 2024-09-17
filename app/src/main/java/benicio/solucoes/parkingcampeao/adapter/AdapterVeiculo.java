@@ -2,6 +2,7 @@ package benicio.solucoes.parkingcampeao.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import benicio.solucoes.parkingcampeao.EscolherModeloActivity;
 import benicio.solucoes.parkingcampeao.ListVeiculosActivity;
 import benicio.solucoes.parkingcampeao.R;
 import benicio.solucoes.parkingcampeao.VerImagensActivity;
@@ -99,11 +101,18 @@ public class AdapterVeiculo extends RecyclerView.Adapter<AdapterVeiculo.MyViewHo
 
         holder.btnImprimir.setOnClickListener(v -> {
 
-            try {
-                imprimir((Button) v, veiculoModel);
-            } catch (Exception e) {
-                Toast.makeText(c, "Erro ao executar impressao\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            AlertDialog.Builder b = new AlertDialog.Builder(c);
+            b.setTitle("Aviso");
+            b.setMessage("Escolha a opção que gostaria de fazer.");
+            b.setPositiveButton("Imprimir a Via Novamente", (d, i) -> {
+                try {
+                    imprimir((Button) v, veiculoModel);
+                } catch (Exception e) {
+                    Toast.makeText(c, "Erro ao executar impressao\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+            b.setNeutralButton("Ir Digitar a Placa", (d, i) -> c.startActivity(new Intent(c, EscolherModeloActivity.class)));
+            b.create().show();
 
 
         });

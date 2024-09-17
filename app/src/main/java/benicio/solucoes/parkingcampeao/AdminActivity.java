@@ -1,6 +1,7 @@
 package benicio.solucoes.parkingcampeao;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -21,6 +22,8 @@ public class AdminActivity extends AppCompatActivity {
     private ActivityAdminBinding mainBinding;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
+    private Intent updateIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +46,32 @@ public class AdminActivity extends AppCompatActivity {
             editor.putString("endereco", mainBinding.endereco.getText().toString()).apply();
             editor.putString("cnpj", mainBinding.cnpj.getText().toString()).apply();
             editor.putString("telefone", mainBinding.telefone.getText().toString()).apply();
-            editor.putString("horasCobrarMenos", mainBinding.horasCobrarMenos.getText().toString()).apply();
-            editor.putString("valorhoraDiaria", mainBinding.valorhoraDiaria.getText().toString()).apply();
-            editor.putString("valorhoraMensalidade", mainBinding.valorhoraMensalidade.getText().toString()).apply();
-            editor.putString("valorhoraMoto", mainBinding.valorhoraMoto.getText().toString()).apply();
-            editor.putString("valorhoraGrande", mainBinding.valorhoraGrande.getText().toString()).apply();
-            editor.putString("valorhoraCarro", mainBinding.valorhoraCarro.getText().toString()).apply();
-            editor.putString("valorhoraCaminhao", mainBinding.valorhoraCaminhao.getText().toString()).apply();
-            editor.putString("valorhoraCarreta", mainBinding.valorhoraCarreta.getText().toString()).apply();
-            editor.putString("valorhoraOutros", mainBinding.valorhoraOutros.getText().toString()).apply();
             editor.putString("tolerancia", mainBinding.valorTolerancia.getText().toString()).apply();
 
-
             Toast.makeText(this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
+        });
+
+        updateIntent = new Intent(this, ConfigurarValorActivity.class);
+
+        mainBinding.configMoto.setOnClickListener(v -> {
+            updateIntent.putExtra("tipo", "Moto");
+            startActivity(updateIntent);
+        });
+        mainBinding.configCaminhao.setOnClickListener(v -> {
+            updateIntent.putExtra("tipo", "Caminhão");
+            startActivity(updateIntent);
+        });
+        mainBinding.configCarreta.setOnClickListener(v -> {
+            updateIntent.putExtra("tipo", "Carreta");
+            startActivity(updateIntent);
+        });
+        mainBinding.configCarro.setOnClickListener(v -> {
+            updateIntent.putExtra("tipo", "Carro");
+            startActivity(updateIntent);
+        });
+        mainBinding.configGrande.setOnClickListener(v -> {
+            updateIntent.putExtra("tipo", "Grande");
+            startActivity(updateIntent);
         });
 
     }
@@ -65,15 +81,15 @@ public class AdminActivity extends AppCompatActivity {
         mainBinding.endereco.setText(sharedPreferences.getString("endereco", ""));
         mainBinding.cnpj.setText(sharedPreferences.getString("cnpj", ""));
         mainBinding.telefone.setText(sharedPreferences.getString("telefone", ""));
-        mainBinding.horasCobrarMenos.setText(sharedPreferences.getString("horasCobrarMenos", ""));
-        mainBinding.valorhoraDiaria.setText(sharedPreferences.getString("valorhoraDiaria", ""));
-        mainBinding.valorhoraMensalidade.setText(sharedPreferences.getString("valorhoraMensalidade", ""));
-        mainBinding.valorhoraMoto.setText(sharedPreferences.getString("valorhoraMoto", ""));
-        mainBinding.valorhoraGrande.setText(sharedPreferences.getString("valorhoraGrande", ""));
-        mainBinding.valorhoraCarro.setText(sharedPreferences.getString("valorhoraCarro", ""));
-        mainBinding.valorhoraCaminhao.setText(sharedPreferences.getString("valorhoraCaminhao", ""));
-        mainBinding.valorhoraCarreta.setText(sharedPreferences.getString("valorhoraCarreta", ""));
-        mainBinding.valorhoraOutros.setText(sharedPreferences.getString("valorhoraOutros", ""));
+
+//        mainBinding.valorhoraMoto.setText(sharedPreferences.getString("valorhoraMoto", ""));
+//        mainBinding.valorhoraGrande.setText(sharedPreferences.getString("valorhoraGrande", ""));
+//        mainBinding.valorhoraCarro.setText(sharedPreferences.getString("valorhoraCarro", ""));
+//        mainBinding.valorhoraCaminhao.setText(sharedPreferences.getString("valorhoraCaminhao", ""));
+//        mainBinding.valorhoraCarreta.setText(sharedPreferences.getString("valorhoraCarreta", ""));
+
+//        mainBinding.valorhoraOutros.setText(sharedPreferences.getString("valorhoraOutros", ""));
+
         mainBinding.valorTolerancia.setText(sharedPreferences.getString("tolerancia", ""));
     }
 }

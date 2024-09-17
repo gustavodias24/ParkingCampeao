@@ -62,14 +62,13 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
-        mainBinding.inputPlaca.setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+        mainBinding.inputPlaca.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         mainBinding.moto.setOnClickListener(this);
         mainBinding.grande.setOnClickListener(this);
         mainBinding.carro.setOnClickListener(this);
         mainBinding.caminhao.setOnClickListener(this);
         mainBinding.carreta.setOnClickListener(this);
-        mainBinding.outros.setOnClickListener(this);
 
         mainBinding.btnProsseguir.setOnClickListener(v -> {
             String placa = mainBinding.inputPlaca.getText().toString();
@@ -194,11 +193,6 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
             mainBinding.veiculoSelecionado.setVisibility(View.VISIBLE);
             tipo = "Carreta";
             mainBinding.veiculoSelecionado.setImageResource(R.drawable.carreta);
-        } else if (view.getId() == R.id.outros) {
-            mainBinding.veiculoSelecionado.setVisibility(View.VISIBLE);
-            tipo = "Outros";
-            mainBinding.veiculoSelecionado.setImageResource(R.drawable.outros);
         }
-
     }
 }
