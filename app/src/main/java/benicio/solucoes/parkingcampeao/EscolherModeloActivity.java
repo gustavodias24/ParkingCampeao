@@ -77,7 +77,6 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
             if (!placa.isEmpty()) {
                 Intent i = new Intent(this, RecolherDadoActivity.class);
 
-
                 for (int index = 0; index < listaExistente.size(); index++) {
                     indexGlobal = index;
                     VeiculoModel veiculoPlaca = listaExistente.get(index);
@@ -99,14 +98,16 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                     }
 
                 }
-
-                if (!tipo.isEmpty() && prosseguir) {
-                    i.putExtra("tipo", tipo);
-                    i.putExtra("placa", placa);
-                    startActivity(i);
-                } else {
-                    Toast.makeText(this, "Escolha um tipo de veículo", Toast.LENGTH_SHORT).show();
+                if (prosseguir){
+                    if (!tipo.isEmpty()) {
+                        i.putExtra("tipo", tipo);
+                        i.putExtra("placa", placa);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(this, "Escolha um tipo de veículo", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             } else {
                 Toast.makeText(this, "Digite a placa do veículo", Toast.LENGTH_SHORT).show();
             }

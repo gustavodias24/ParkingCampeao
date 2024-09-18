@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VeiculoUtils {
-
     public final static String NAME_PREFS = "veiculo_prefs";
     public final static String NAME = "veiculos";
 

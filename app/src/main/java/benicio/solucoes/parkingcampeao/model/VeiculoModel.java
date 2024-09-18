@@ -27,6 +27,12 @@ import benicio.solucoes.parkingcampeao.R;
 
 public class VeiculoModel {
 
+    private final String valorMeiaHoraString = "valorMeiaHora";
+    private final String valorHoraString = "valorHora";
+    private final String valorExcedenteString = "valorExcedente";
+    private final String valorDiarioString = "valorDiario";
+    private final String valorMensalString = "valorMensal";
+
     String status = "Pendente";
     String tipo, placa, dataEntrada, dataSaida, operador;
 
@@ -111,13 +117,18 @@ public class VeiculoModel {
 
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
-        String dataPermanenciaString = v.valorTempoPago.split("\n")[0];
+        String tipoPagamentoValor = v.valorTempoPago.split("\n")[0];
+        out.write(tipoPagamentoValor.getBytes(StandardCharsets.UTF_8));
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        String dataPermanenciaString = v.valorTempoPago.split("\n")[1];
         out.write(dataPermanenciaString.getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignCenter());
         out.write(EscPosBase.getFontTall());
-        String valorString = VeiculoModel.normalize(v.valorTempoPago.split("\n")[1]);
+        String valorString = VeiculoModel.normalize(v.valorTempoPago.split("\n")[2]);
         out.write(valorString.getBytes(StandardCharsets.UTF_8));
 
         out.flush();
@@ -208,7 +219,7 @@ public class VeiculoModel {
         out.write(EscPosBase.nextLine());
         out.write("Nao nos responsabilizamos por objetos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
-        String toleranciString = "TOLERANCIA DE "+ sharedPreferences.getString("tolerancia", "0") + " MINUTO(S)";
+        String toleranciString = "TOLERANCIA DE " + sharedPreferences.getString("tolerancia", "0") + " MINUTO(S)";
         out.write(toleranciString.getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
         out.write("================================".getBytes(StandardCharsets.UTF_8));
@@ -223,130 +234,242 @@ public class VeiculoModel {
     @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String calcularTempoEPreco(String entrada, String saida, SharedPreferences sharedPreferences, VeiculoModel veiculoModel) {
-
-        String tipoVeiculoAtual = veiculoModel.getTipo();
-        float valorHora = 0;
-
-        switch (tipoVeiculoAtual) {
-            case "Moto":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraMoto", "0"));
-                break;
-            case "Grande":
-                valorHora = Float.parseFloat(sharedPreferences.getString("", "0"));
-                break;
-            case "valorhoraGrande":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraGrande", "0"));
-                break;
-            case "Carro":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCarro", "0"));
-                break;
-            case "Caminhão":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCaminhao", "0"));
-                break;
-            case "Carreta":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCarreta", "0"));
-                break;
-            case "Outros":
-                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraOutros", "0"));
-                break;
-        }
-
         // Formato de data e hora esperado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
         // Parse das strings de entrada e saída para LocalDateTime
         LocalDateTime entradaTime = LocalDateTime.parse(entrada, formatter);
         LocalDateTime saidaTime = LocalDateTime.parse(saida, formatter);
+
         // Calcula a duração entre entrada e saída
         Duration duracao = Duration.between(entradaTime, saidaTime);
-        // Obtém o total de minutos
-        long minutosTotal = duracao.toMinutes();
 
+        // Calcula o valor da cobrança
+        float tolerancia = Float.parseFloat(sharedPreferences.getString("tolerancia", "0").replace(",", "."));
+        float valorMensal = Float.parseFloat(sharedPreferences.getString(
+                        veiculoModel.valorMensalString + veiculoModel.getTipo(), "0")
+                .replace(",", "."));
+        float valorDiario = Float.parseFloat(sharedPreferences.getString(
+                        veiculoModel.valorDiarioString + veiculoModel.getTipo(), "0")
+                .replace(",", "."));
 
-        if (veiculoModel.isDiaria()) {
-            // Calcula o número de dias completos
-            long dias = minutosTotal / (24 * 60);
-            // Calcula o restante de minutos após os dias completos
-            long minutosRestantes = minutosTotal % (24 * 60);
+        float valorHora = Float.parseFloat(sharedPreferences.getString(
+                        veiculoModel.valorHoraString + veiculoModel.getTipo(), "0")
+                .replace(",", "."));
 
-            long horas = minutosRestantes / 60;
-            long minutos = minutosRestantes % 60;
+        float valorMeiaHora = Float.parseFloat(sharedPreferences.getString(
+                        veiculoModel.valorMeiaHoraString + veiculoModel.getTipo(), "0")
+                .replace(",", "."));
 
-            float valorDiaria = Float.parseFloat(sharedPreferences.getString("valorhoraDiaria", "0"));
+        double valor = calcularCobranca(duracao, tolerancia, valorMensal, valorDiario, valorHora, valorMeiaHora);
 
-            double valorTotal = dias * valorDiaria; // valor por dia
-            if (horas > 0 || minutos > 0) {
-                valorTotal += (horas + 1) * valorHora; // valor por hora adicional, inclui fração de hora
-            }
-
-            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
-        } else if (veiculoModel.isMensalidade()) {
-            // Calcula a quantidade de meses completos e a fração de mês
-            long mesesCompletos = ChronoUnit.MONTHS.between(entradaTime, saidaTime);
-            long diasRestantes = ChronoUnit.DAYS.between(entradaTime.plusMonths(mesesCompletos), saidaTime);
-
-            float valorMensalidade = Float.parseFloat(sharedPreferences.getString("valorhoraMensalidade", "0"));
-
-            // Calcula o valor total com base na mensalidade
-            double valorTotal = mesesCompletos * valorMensalidade; // valor por mês completo
-            if (diasRestantes > 0) {
-                valorTotal += valorMensalidade; // cobra um mês inteiro para dias restantes
-            }
-
-            // Calcula o número de horas e minutos restantes
-            Duration duracaoRestante = Duration.between(entradaTime.plusMonths(mesesCompletos).plusDays(diasRestantes), saidaTime);
-            long horasRestantes = duracaoRestante.toHours();
-            long minutosRestantes = duracaoRestante.toMinutes() % 60;
-
-            return String.format("Tempo: %d meses, %d dias, %d horas e %d minutos\nPreço a pagar: R$ %.2f", mesesCompletos, diasRestantes, horasRestantes, minutosRestantes, valorTotal);
-        } else if (veiculoModel.isCobrarMenos()) {
-
-            // Obtém o total de minutos e converte para horas e minutos
-            long horas = minutosTotal / 60;
-            long minutos = minutosTotal % 60;
-
-            float qtdHoraMaisBarata = Float.parseFloat(sharedPreferences.getString("horasCobrarMenos", "0"));
-
-            double valorTotal = 0;
-            if (horas <= qtdHoraMaisBarata) {
-                valorTotal = horas * valorHora;
-            } else {
-                valorTotal = qtdHoraMaisBarata * valorHora;
-                // Cobra R$ 10 por hora nas horas adicionais
-                valorTotal += (horas - qtdHoraMaisBarata) * veiculoModel.getValorMaisBarato();
-            }
-
-            // Se há minutos adicionais, cobra uma hora a mais
-            if (minutos > 0) {
-                if (horas < qtdHoraMaisBarata) {
-                    valorTotal += valorHora; // cobra R$ 20 se estiver nas primeiras 8 horas
-                } else {
-                    valorTotal += veiculoModel.getValorMaisBarato(); // cobra R$ 10 se for após 8 horas
-                }
-            }
-
-            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
-        }
-
-        // Se o tempo de permanência for menor ou igual à tolerância, não cobra
-        if (minutosTotal <= Float.parseFloat(sharedPreferences.getString("tolerancia", "0"))) {
-            return "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
-        }
-
-        // Calcula o total de horas e minutos
-        long horas = minutosTotal / 60;
-        long minutos = minutosTotal % 60;
-
-        // Calcula o preço total: horas cheias + 1 hora adicional se houver minutos
-        double precoTotal = horas * valorHora;
-
-        if (minutos > 0) {
-            precoTotal += valorHora;
-        }
-
-        // Retorna o tempo e o preço
-        return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, precoTotal);
-
+        return formatarPagamento(duracao, valor);
     }
+
+    @SuppressLint("DefaultLocale")
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String formatarPagamento(Duration duracao, double valor) {
+        long dias = duracao.toDays();
+
+        // Se a duração for de um mês ou mais
+        if (dias >= 30) {
+            long meses = dias / 30;
+            long diasRestantes = dias % 30;
+            return String.format("Tempo: %d meses e %d dias\nPagamento por mes\nPreco a pagar: R$ %.2f", meses, diasRestantes, valor);
+        }
+
+        // Se a duração for de mais de um dia
+        if (dias >= 1) {
+            return String.format("Tempo: %d dias\nPagamento por dia\nPreco a pagar: R$ %.2f", dias, valor);
+        }
+
+        // Se a duração for de mais de uma hora
+        long horas = duracao.toHours();
+        long minutos = duracao.toMinutes() % 60;
+        if (horas >= 1) {
+            return String.format("Tempo: %d horas e %d minutos\nPagamento por hora\nPreco a pagar: R$ %.2f", horas, minutos, valor);
+        }
+
+        // Se a duração for de meia hora ou mais
+        long minutosTotais = duracao.toMinutes();
+        if (minutosTotais >= 30) {
+            return String.format("Tempo: %d minutos\nPagamento por meia hora\nPreco a pagar: R$ %.2f", minutosTotais, valor);
+        }
+
+        return String.format("Tempo: %d minutos\nSem cobranca devido a tolerancia\nPreco a pagar: R$ %.2f", minutosTotais, valor);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static double calcularCobranca(Duration duracao, float tolerancia, float valorMensal, float valorDiario, float valorHora, float valorMeiaHora) {
+
+        // Verifica se a duração é de um minuto ou menos
+        if (duracao.toMinutes() <= tolerancia) {
+            return 0.0;
+        }
+
+        // Verifica se a duração é de um mês ou mais
+        long dias = duracao.toDays();
+        if (dias >= 30) {
+            long meses = dias / 30; // Calcula o número de meses completos
+            long diasRestantes = dias % 30; // Calcula os dias que sobraram
+            double valor = meses * valorMensal;
+
+            // Se sobrar dias, cobra a diária de 20 reais por dia adicional
+            if (diasRestantes > 0) {
+                valor += diasRestantes * valorDiario;
+            }
+
+            return valor;
+        }
+
+        // Verifica se a duração é de mais de um dia
+        if (dias >= 1) {
+            return dias * valorDiario;
+        }
+
+        // Verifica se a duração é de mais de uma hora
+        long horas = duracao.toHours();
+        if (horas >= 1) {
+            return horas * valorHora;
+        }
+
+        // Verifica se a duração é de mais de meia hora
+        long minutos = duracao.toMinutes();
+        if (minutos >= 30) {
+            return valorMeiaHora; // Cobrar 3,50 reais por meia hora
+        }
+
+        return 0.0;
+    }
+
+//    @SuppressLint("DefaultLocale")
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public static String calcularTempoEPreco(String entrada, String saida, SharedPreferences sharedPreferences, VeiculoModel veiculoModel) {
+//
+//        String tipoVeiculoAtual = veiculoModel.getTipo();
+//
+//        float valorHora = 0;
+//
+//        switch (tipoVeiculoAtual) {
+//            case "Moto":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraMoto", "0"));
+//                break;
+//            case "Grande":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("", "0"));
+//                break;
+//            case "valorhoraGrande":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraGrande", "0"));
+//                break;
+//            case "Carro":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCarro", "0"));
+//                break;
+//            case "Caminhão":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCaminhao", "0"));
+//                break;
+//            case "Carreta":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraCarreta", "0"));
+//                break;
+//            case "Outros":
+//                valorHora = Float.parseFloat(sharedPreferences.getString("valorhoraOutros", "0"));
+//                break;
+//        }
+//
+//        // Formato de data e hora esperado
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//        // Parse das strings de entrada e saída para LocalDateTime
+//        LocalDateTime entradaTime = LocalDateTime.parse(entrada, formatter);
+//        LocalDateTime saidaTime = LocalDateTime.parse(saida, formatter);
+//        // Calcula a duração entre entrada e saída
+//        Duration duracao = Duration.between(entradaTime, saidaTime);
+//        // Obtém o total de minutos
+//        long minutosTotal = duracao.toMinutes();
+//
+//
+//        if (veiculoModel.isDiaria()) {
+//            // Calcula o número de dias completos
+//            long dias = minutosTotal / (24 * 60);
+//            // Calcula o restante de minutos após os dias completos
+//            long minutosRestantes = minutosTotal % (24 * 60);
+//
+//            long horas = minutosRestantes / 60;
+//            long minutos = minutosRestantes % 60;
+//
+//            float valorDiaria = Float.parseFloat(sharedPreferences.getString("valorhoraDiaria", "0"));
+//
+//            double valorTotal = dias * valorDiaria; // valor por dia
+//            if (horas > 0 || minutos > 0) {
+//                valorTotal += (horas + 1) * valorHora; // valor por hora adicional, inclui fração de hora
+//            }
+//
+//            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
+//        } else if (veiculoModel.isMensalidade()) {
+//            // Calcula a quantidade de meses completos e a fração de mês
+//            long mesesCompletos = ChronoUnit.MONTHS.between(entradaTime, saidaTime);
+//            long diasRestantes = ChronoUnit.DAYS.between(entradaTime.plusMonths(mesesCompletos), saidaTime);
+//
+//            float valorMensalidade = Float.parseFloat(sharedPreferences.getString("valorhoraMensalidade", "0"));
+//
+//            // Calcula o valor total com base na mensalidade
+//            double valorTotal = mesesCompletos * valorMensalidade; // valor por mês completo
+//            if (diasRestantes > 0) {
+//                valorTotal += valorMensalidade; // cobra um mês inteiro para dias restantes
+//            }
+//
+//            // Calcula o número de horas e minutos restantes
+//            Duration duracaoRestante = Duration.between(entradaTime.plusMonths(mesesCompletos).plusDays(diasRestantes), saidaTime);
+//            long horasRestantes = duracaoRestante.toHours();
+//            long minutosRestantes = duracaoRestante.toMinutes() % 60;
+//
+//            return String.format("Tempo: %d meses, %d dias, %d horas e %d minutos\nPreço a pagar: R$ %.2f", mesesCompletos, diasRestantes, horasRestantes, minutosRestantes, valorTotal);
+//        } else if (veiculoModel.isCobrarMenos()) {
+//
+//            // Obtém o total de minutos e converte para horas e minutos
+//            long horas = minutosTotal / 60;
+//            long minutos = minutosTotal % 60;
+//
+//            float qtdHoraMaisBarata = Float.parseFloat(sharedPreferences.getString("horasCobrarMenos", "0"));
+//
+//            double valorTotal = 0;
+//            if (horas <= qtdHoraMaisBarata) {
+//                valorTotal = horas * valorHora;
+//            } else {
+//                valorTotal = qtdHoraMaisBarata * valorHora;
+//                // Cobra R$ 10 por hora nas horas adicionais
+//                valorTotal += (horas - qtdHoraMaisBarata) * veiculoModel.getValorMaisBarato();
+//            }
+//
+//            // Se há minutos adicionais, cobra uma hora a mais
+//            if (minutos > 0) {
+//                if (horas < qtdHoraMaisBarata) {
+//                    valorTotal += valorHora; // cobra R$ 20 se estiver nas primeiras 8 horas
+//                } else {
+//                    valorTotal += veiculoModel.getValorMaisBarato(); // cobra R$ 10 se for após 8 horas
+//                }
+//            }
+//
+//            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
+//        }
+//
+//        // Se o tempo de permanência for menor ou igual à tolerância, não cobra
+//        if (minutosTotal <= Float.parseFloat(sharedPreferences.getString("tolerancia", "0"))) {
+//            return "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
+//        }
+//
+//        // Calcula o total de horas e minutos
+//        long horas = minutosTotal / 60;
+//        long minutos = minutosTotal % 60;
+//
+//        // Calcula o preço total: horas cheias + 1 hora adicional se houver minutos
+//        double precoTotal = horas * valorHora;
+//
+//        if (minutos > 0) {
+//            precoTotal += valorHora;
+//        }
+//
+//        // Retorna o tempo e o preço
+//        return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, precoTotal);
+//
+//    }
 
     @Override
     public String toString() {
@@ -464,10 +587,10 @@ public class VeiculoModel {
 
     public float getValorPago() {
         // Extrai o valor do campo valorTempoPago
-        try{
+        try {
             String valorStr = valorTempoPago.split("\n")[1].split(" ")[4].replace(",", ".");
             return Float.parseFloat(valorStr);
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
     }
