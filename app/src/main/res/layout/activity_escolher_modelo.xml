@@ -112,20 +112,14 @@
                 android:visibility="invisible"
                 app:srcCompat="@drawable/carreta" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/inputPlaca"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:boxStrokeColor="#000000">
+                android:ems="10"
+                android:hint="PLACA"
+                android:inputType="text" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputPlaca"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:hint="PLACA"
-                    android:textAllCaps="true" />
-            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <Button

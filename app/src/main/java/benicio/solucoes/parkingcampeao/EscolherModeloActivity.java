@@ -1,6 +1,7 @@
 package benicio.solucoes.parkingcampeao;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -47,6 +48,8 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
     private String tipo = "";
     List<VeiculoModel> listaExistente;
 
+    private Dialog dialogPlaca;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -89,19 +92,23 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                         b.setPositiveButton("Sim", (dialogInterface, i1) -> {
                             try {
                                 imprimir((Button) v);
+                                mainBinding.inputPlaca.setText("");
+                                dialogPlaca.dismiss();
                             } catch (Exception e) {
                                 Toast.makeText(this, "Erro ao executar impressao\n\n" + e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
                         b.setNegativeButton("Não", null);
-                        b.create().show();
+                        dialogPlaca = b.create();
+                        dialogPlaca.show();
                     }
 
                 }
-                if (prosseguir){
+                if (prosseguir) {
                     if (!tipo.isEmpty()) {
                         i.putExtra("tipo", tipo);
                         i.putExtra("placa", placa);
+                        finish();
                         startActivity(i);
                     } else {
                         Toast.makeText(this, "Escolha um tipo de veículo", Toast.LENGTH_SHORT).show();

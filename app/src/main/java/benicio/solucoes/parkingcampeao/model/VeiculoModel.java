@@ -96,13 +96,17 @@ public class VeiculoModel {
         out.write("SAIDA".getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String veiculoString = "Veiculo: " + v.getPlaca();
-        out.write(veiculoString.getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.alignCenter());
+        out.write(EscPosBase.getFontTall());
+        String veiculoPlaca = VeiculoModel.normalize(v.getTipo() + " " + v.getPlaca());
+        out.write(veiculoPlaca.getBytes(StandardCharsets.UTF_8));
+
+        out.flush();
 
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
-        String operadorString = "Operador: " + v.operador;
+        out.write(EscPosBase.getFontNormal());
+        String operadorString = "Operador: " + VeiculoModel.normalize(v.operador);
         out.write(operadorString.getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.nextLine());
@@ -125,10 +129,17 @@ public class VeiculoModel {
         String dataPermanenciaString = v.valorTempoPago.split("\n")[1];
         out.write(dataPermanenciaString.getBytes(StandardCharsets.UTF_8));
 
+        String valorStringLabel = VeiculoModel.normalize(v.valorTempoPago.split("\n")[2]);
+        String valorLabel = valorStringLabel.split(":")[0] + ":";
+        String valorString = valorStringLabel.split(":")[1];
+
+        out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignLeft());
+        out.write(valorLabel.getBytes(StandardCharsets.UTF_8));
+
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignCenter());
         out.write(EscPosBase.getFontTall());
-        String valorString = VeiculoModel.normalize(v.valorTempoPago.split("\n")[2]);
         out.write(valorString.getBytes(StandardCharsets.UTF_8));
 
         out.flush();
@@ -197,12 +208,16 @@ public class VeiculoModel {
         out.write("ENTRADA".getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.nextLine());
-        out.write(EscPosBase.alignLeft());
-        String veiculoString = "Veiculo: " + v.getPlaca();
-        out.write(veiculoString.getBytes(StandardCharsets.UTF_8));
+        out.write(EscPosBase.alignCenter());
+        out.write(EscPosBase.getFontTall());
+        String veiculoPlaca = VeiculoModel.normalize(v.getTipo() + " " + v.getPlaca());
+        out.write(veiculoPlaca.getBytes(StandardCharsets.UTF_8));
+
+        out.flush();
 
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
+        out.write(EscPosBase.getFontNormal());
         @SuppressLint("SimpleDateFormat") String dataString = "Data: " + v.getDataEntrada();
         out.write(dataString.getBytes(StandardCharsets.UTF_8));
 
@@ -219,6 +234,7 @@ public class VeiculoModel {
         out.write(EscPosBase.nextLine());
         out.write("Nao nos responsabilizamos por objetos deixados no interior do veiculo.".getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());
+        out.write(EscPosBase.alignCenter());
         String toleranciString = "TOLERANCIA DE " + sharedPreferences.getString("tolerancia", "0") + " MINUTO(S)";
         out.write(toleranciString.getBytes(StandardCharsets.UTF_8));
         out.write(EscPosBase.nextLine());

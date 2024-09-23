@@ -35,6 +35,10 @@ public class ListVeiculosActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        mainBinding.btnEscolha.setOnClickListener(v -> {
+            finish();
+            startActivity(new Intent(this, EscolherModeloActivity.class));
+        });
         listaVeiculos = VeiculoUtils.returnListVeiculos(this);
 //        Collections.reverse(listaVeiculos);
 

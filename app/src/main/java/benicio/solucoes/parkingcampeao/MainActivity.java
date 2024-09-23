@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
             senha = mainBinding.inputSenha.getText().toString();
 
             if (login.equals("adm") && senha.equals("adm@321")) {
+                mainBinding.inputUsuario.setText("");
+                mainBinding.inputSenha.setText("");
                 startActivity(new Intent(this, AdminActivity.class));
             }
         });

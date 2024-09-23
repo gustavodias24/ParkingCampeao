@@ -79,7 +79,7 @@ public class RelatorioActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
 
-        mainBinding.inputDataInicial.setOnClickListener(v -> {
+        mainBinding.dataInicialButton.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -97,7 +97,7 @@ public class RelatorioActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
-        mainBinding.inputDataFinal.setOnClickListener(v -> {
+        mainBinding.dataFinalButton.setOnClickListener(v -> {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -184,16 +184,16 @@ public class RelatorioActivity extends AppCompatActivity {
                 infoBuilder.append("<br><b>Veículos que não saíram por tipo:</b>").append("<br>");
                 veiculosPendentesPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
 
-                infoBuilder.append("<br><b>Valor gasto por tipo de veículo:</b>").append("<br>");
-                valorPorTipo.forEach((tipo, valor) -> infoBuilder.append(tipo).append(": R$ ").append(valor).append("<br>"));
+//                infoBuilder.append("<br><b>Valor gasto por tipo de veículo:</b>").append("<br>");
+//                valorPorTipo.forEach((tipo, valor) -> infoBuilder.append(tipo).append(": R$ ").append(valor).append("<br>"));
 
-                infoBuilder.append("<br><b>Contagem e valor por placa:</b>").append("<br>");
-                placaCount.forEach((placa, count) -> infoBuilder.append(placa).append(": ").append(count)
-                        .append(" vezes, valor total: R$ ").append(valorPorPlaca.get(placa)).append("<br>"));
+//                infoBuilder.append("<br><b>Contagem e valor por placa:</b>").append("<br>");
+//                placaCount.forEach((placa, count) -> infoBuilder.append(placa).append(": ").append(count)
+//                        .append(" vezes, valor total: R$ ").append(valorPorPlaca.get(placa)).append("<br>"));
 
                 infoBuilder.append("<br><b>Diarias:</b> ").append(diariaCount).append(", valor total: R$ ").append(diariaValor).append("<br>");
                 infoBuilder.append("<b>Mensalidades:</b> ").append(mensalidadeCount).append(", valor total: R$ ").append(mensalidadeValor).append("<br>");
-                infoBuilder.append("<b>Cobrar Menos:</b> ").append(cobrarMenosCount).append(", valor total: R$ ").append(cobrarMenosValor).append("<br>");
+//                infoBuilder.append("<b>Cobrar Menos:</b> ").append(cobrarMenosCount).append(", valor total: R$ ").append(cobrarMenosValor).append("<br>");
 
                 mainBinding.textResultado.setText(Html.fromHtml(infoBuilder.toString()));
             } catch (Exception e) {

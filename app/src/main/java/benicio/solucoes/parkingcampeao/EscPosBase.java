@@ -121,7 +121,7 @@ public class EscPosBase {
     }
 
 
-    protected static byte[] getFontNormal() {
+    public static byte[] getFontNormal() {
         return EscPosBase.TEXT_SIZE_NORMAL;
     }
 
