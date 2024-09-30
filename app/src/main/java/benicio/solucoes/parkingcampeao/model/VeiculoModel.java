@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -42,7 +43,7 @@ public class VeiculoModel {
 
     List<String> listaFotos = new ArrayList<>();
 
-    String valorTempoPago = "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
+    String valorTempoPago = "Tempo: 0 horas e 0 minutos\nValor a pagar:  0.0";
 
     public VeiculoModel() {
     }
@@ -62,7 +63,6 @@ public class VeiculoModel {
         out.write(EscPosBase.alignCenter());
         out.write(logoImpressaobyte);
         out.write(EscPosBase.alignLeft());
-        out.write(EscPosBase.nextLine());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.TEXT_WEIGHT_BOLD);
@@ -99,10 +99,11 @@ public class VeiculoModel {
         out.write(EscPosBase.alignCenter());
         out.write(EscPosBase.getFontTall());
         String veiculoPlaca = VeiculoModel.normalize(v.getTipo() + " " + v.getPlaca());
-        out.write(veiculoPlaca.getBytes(StandardCharsets.UTF_8));
+        out.write(String.join(" ", veiculoPlaca.split("")).getBytes(StandardCharsets.UTF_8));
 
         out.flush();
 
+        out.write(EscPosBase.getResetPrinter());
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
         out.write(EscPosBase.getFontNormal());
@@ -137,13 +138,16 @@ public class VeiculoModel {
         out.write(EscPosBase.alignLeft());
         out.write(valorLabel.getBytes(StandardCharsets.UTF_8));
 
+        out.write(EscPosBase.TEXT_WEIGHT_BOLD);
+        out.write(EscPosBase.TEXT_SIZE_DOUBLE_HEIGHT);
+        out.write(EscPosBase.getFontTall());
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignCenter());
-        out.write(EscPosBase.getFontTall());
-        out.write(valorString.getBytes(StandardCharsets.UTF_8));
+        out.write(String.join(" ", valorString.split("")).getBytes(StandardCharsets.UTF_8));
 
         out.flush();
 
+        out.write(EscPosBase.getResetPrinter());
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignCenter());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
@@ -174,7 +178,6 @@ public class VeiculoModel {
         out.write(EscPosBase.alignCenter());
         out.write(logoImpressaobyte);
         out.write(EscPosBase.alignLeft());
-        out.write(EscPosBase.nextLine());
         out.write("--------------------------------".getBytes(StandardCharsets.UTF_8));
 
         out.write(EscPosBase.TEXT_WEIGHT_BOLD);
@@ -211,10 +214,10 @@ public class VeiculoModel {
         out.write(EscPosBase.alignCenter());
         out.write(EscPosBase.getFontTall());
         String veiculoPlaca = VeiculoModel.normalize(v.getTipo() + " " + v.getPlaca());
-        out.write(veiculoPlaca.getBytes(StandardCharsets.UTF_8));
+        out.write(String.join(" ", veiculoPlaca.split("")).getBytes(StandardCharsets.UTF_8));
 
         out.flush();
-
+        out.write(EscPosBase.getResetPrinter());
         out.write(EscPosBase.nextLine());
         out.write(EscPosBase.alignLeft());
         out.write(EscPosBase.getFontNormal());
@@ -250,7 +253,7 @@ public class VeiculoModel {
     @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String calcularTempoEPreco(String entrada, String saida, SharedPreferences sharedPreferences, VeiculoModel veiculoModel) {
-        // Formato de data e hora esperado
+// Formato de data e hora esperado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         // Parse das strings de entrada e saída para LocalDateTime
@@ -278,63 +281,69 @@ public class VeiculoModel {
                 .replace(",", "."));
 
         double valor = calcularCobranca(duracao, tolerancia, valorMensal, valorDiario, valorHora, valorMeiaHora);
+        return formatarPagamento(duracao, valor, tolerancia);
 
-        return formatarPagamento(duracao, valor);
     }
 
     @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static String formatarPagamento(Duration duracao, double valor) {
+    public static String formatarPagamento(Duration duracao, double valor, float tolerancia) {
         long dias = duracao.toDays();
+
 
         // Se a duração for de um mês ou mais
         if (dias >= 30) {
             long meses = dias / 30;
             long diasRestantes = dias % 30;
-            return String.format("Tempo: %d meses e %d dias\nPagamento por mes\nPreco a pagar: R$ %.2f", meses, diasRestantes, valor);
+            return String.format("Tempo: %d meses e %d dias\nPagamento por mes\nValor a pagar:  %.2f", meses, diasRestantes, valor);
         }
 
         // Se a duração for de mais de um dia
         if (dias >= 1) {
-            return String.format("Tempo: %d dias\nPagamento por dia\nPreco a pagar: R$ %.2f", dias, valor);
+            return String.format("Tempo: %d dias\nPagamento por dia\nValor a pagar:  %.2f", dias, valor);
         }
 
         // Se a duração for de mais de uma hora
         long horas = duracao.toHours();
         long minutos = duracao.toMinutes() % 60;
         if (horas >= 1) {
-            return String.format("Tempo: %d horas e %d minutos\nPagamento por hora\nPreco a pagar: R$ %.2f", horas, minutos, valor);
+            return String.format("Tempo: %d horas e %d minutos\nPagamento por hora\nValor a pagar:  %.2f", horas, minutos, valor);
         }
 
         // Se a duração for de meia hora ou mais
         long minutosTotais = duracao.toMinutes();
-        if (minutosTotais >= 30) {
-            return String.format("Tempo: %d minutos\nPagamento por meia hora\nPreco a pagar: R$ %.2f", minutosTotais, valor);
+        if (minutosTotais >= 0) {
+            return String.format("Tempo: %d minutos\nPagamento por meia hora\nValor a pagar:  %.2f", minutosTotais, valor);
         }
 
-        return String.format("Tempo: %d minutos\nSem cobranca devido a tolerancia\nPreco a pagar: R$ %.2f", minutosTotais, valor);
+        if (duracao.toMinutes() <= tolerancia) {
+            return String.format("Tempo: %d minutos\nSem cobranca devido a tolerancia\nValor a pagar:  %.2f", minutosTotais, valor);
+        }
+
+        return "";
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static double calcularCobranca(Duration duracao, float tolerancia, float valorMensal, float valorDiario, float valorHora, float valorMeiaHora) {
-
+    public static double calcularCobranca(Duration duracao, float tolerancia, float valorMensal,
+                                          float valorDiario, float valorHora, float valorMeiaHora) {
         // Verifica se a duração é de um minuto ou menos
         if (duracao.toMinutes() <= tolerancia) {
             return 0.0;
         }
 
+        // Calcula a duração efetiva após a tolerância
+        long minutosEfetivos = duracao.toMinutes() - (long) tolerancia;
+
         // Verifica se a duração é de um mês ou mais
         long dias = duracao.toDays();
         if (dias >= 30) {
-            long meses = dias / 30; // Calcula o número de meses completos
-            long diasRestantes = dias % 30; // Calcula os dias que sobraram
+            long meses = dias / 30;
+            long diasRestantes = dias % 30;
             double valor = meses * valorMensal;
 
-            // Se sobrar dias, cobra a diária de 20 reais por dia adicional
             if (diasRestantes > 0) {
                 valor += diasRestantes * valorDiario;
             }
-
             return valor;
         }
 
@@ -344,14 +353,13 @@ public class VeiculoModel {
         }
 
         // Verifica se a duração é de mais de uma hora
-        long horas = duracao.toHours();
+        long horas = minutosEfetivos / 60;
         if (horas >= 1) {
-            return horas * valorHora;
+            return horas * valorHora + (minutosEfetivos % 60 > 0 ? valorMeiaHora : 0);
         }
 
-        // Verifica se a duração é de mais de meia hora
-        long minutos = duracao.toMinutes();
-        if (minutos >= 30) {
+        // Para durações que excedem a tolerância mas são menores que 30 minutos
+        if (minutosEfetivos > 0) {
             return valorMeiaHora; // Cobrar 3,50 reais por meia hora
         }
 
@@ -417,7 +425,7 @@ public class VeiculoModel {
 //                valorTotal += (horas + 1) * valorHora; // valor por hora adicional, inclui fração de hora
 //            }
 //
-//            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
+//            return String.format("Tempo: %d horas e %d minutos\nValor a pagar:  %.2f", horas, minutos, valorTotal);
 //        } else if (veiculoModel.isMensalidade()) {
 //            // Calcula a quantidade de meses completos e a fração de mês
 //            long mesesCompletos = ChronoUnit.MONTHS.between(entradaTime, saidaTime);
@@ -436,7 +444,7 @@ public class VeiculoModel {
 //            long horasRestantes = duracaoRestante.toHours();
 //            long minutosRestantes = duracaoRestante.toMinutes() % 60;
 //
-//            return String.format("Tempo: %d meses, %d dias, %d horas e %d minutos\nPreço a pagar: R$ %.2f", mesesCompletos, diasRestantes, horasRestantes, minutosRestantes, valorTotal);
+//            return String.format("Tempo: %d meses, %d dias, %d horas e %d minutos\nValor a pagar:  %.2f", mesesCompletos, diasRestantes, horasRestantes, minutosRestantes, valorTotal);
 //        } else if (veiculoModel.isCobrarMenos()) {
 //
 //            // Obtém o total de minutos e converte para horas e minutos
@@ -450,25 +458,25 @@ public class VeiculoModel {
 //                valorTotal = horas * valorHora;
 //            } else {
 //                valorTotal = qtdHoraMaisBarata * valorHora;
-//                // Cobra R$ 10 por hora nas horas adicionais
+//                // Cobra  10 por hora nas horas adicionais
 //                valorTotal += (horas - qtdHoraMaisBarata) * veiculoModel.getValorMaisBarato();
 //            }
 //
 //            // Se há minutos adicionais, cobra uma hora a mais
 //            if (minutos > 0) {
 //                if (horas < qtdHoraMaisBarata) {
-//                    valorTotal += valorHora; // cobra R$ 20 se estiver nas primeiras 8 horas
+//                    valorTotal += valorHora; // cobra  20 se estiver nas primeiras 8 horas
 //                } else {
-//                    valorTotal += veiculoModel.getValorMaisBarato(); // cobra R$ 10 se for após 8 horas
+//                    valorTotal += veiculoModel.getValorMaisBarato(); // cobra  10 se for após 8 horas
 //                }
 //            }
 //
-//            return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, valorTotal);
+//            return String.format("Tempo: %d horas e %d minutos\nValor a pagar:  %.2f", horas, minutos, valorTotal);
 //        }
 //
 //        // Se o tempo de permanência for menor ou igual à tolerância, não cobra
 //        if (minutosTotal <= Float.parseFloat(sharedPreferences.getString("tolerancia", "0"))) {
-//            return "Tempo: 0 horas e 0 minutos\nPreço a pagar: R$ 0.0";
+//            return "Tempo: 0 horas e 0 minutos\nValor a pagar:  0.0";
 //        }
 //
 //        // Calcula o total de horas e minutos
@@ -483,7 +491,7 @@ public class VeiculoModel {
 //        }
 //
 //        // Retorna o tempo e o preço
-//        return String.format("Tempo: %d horas e %d minutos\nPreço a pagar: R$ %.2f", horas, minutos, precoTotal);
+//        return String.format("Tempo: %d horas e %d minutos\nValor a pagar:  %.2f", horas, minutos, precoTotal);
 //
 //    }
 

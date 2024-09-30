@@ -130,10 +130,10 @@ public class EscPosBase {
     }
 
 
-//    protected static byte[] getFontBig() {
-//        return EscPosBase.TEXT_SIZE_BIG;
-//    }
-//
+    public static byte[] getResetPrinter() {
+        return EscPosBase.RESET_PRINTER;
+    }
+
 //    protected static byte[] getFontSmall() {
 //        return EscPosBase.TEXT_SIZE_SMALL;
 //    }

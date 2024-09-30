@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -83,7 +84,9 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                 for (int index = 0; index < listaExistente.size(); index++) {
                     indexGlobal = index;
                     VeiculoModel veiculoPlaca = listaExistente.get(index);
-                    if (veiculoPlaca.getPlaca().toLowerCase().equals(placa.toLowerCase()) && veiculoPlaca.getStatus().equals("Pendente")) {
+
+                    if (veiculoPlaca.getPlaca().equals(placa) && veiculoPlaca.getStatus().equals("Pendente")) {
+
                         prosseguir = false;
 
                         AlertDialog.Builder b = new AlertDialog.Builder(EscolherModeloActivity.this);
@@ -135,25 +138,25 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
         BluetoothSocket impressora = printerBluetooth.createInsecureRfcommSocketToServiceRecord(UUID.randomUUID());
 
         impressora.connect();
-        try {
-            view.setEnabled(false);
 
-            SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
-            @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
-            String tempoEPreco = VeiculoModel.calcularTempoEPreco(listaExistente.get(indexGlobal).getDataEntrada(), dataConclusao, sharedPreferences, listaExistente.get(indexGlobal));
+        SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
+        @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+        String tempoEPreco = VeiculoModel.calcularTempoEPreco(listaExistente.get(indexGlobal).getDataEntrada(), dataConclusao, sharedPreferences, listaExistente.get(indexGlobal));
 
-            listaExistente.get(indexGlobal).setStatus("Concluído");
-            listaExistente.get(indexGlobal).setDataSaida(dataConclusao);
-            listaExistente.get(indexGlobal).setValorTempoPago(tempoEPreco);
-
-            VeiculoUtils.saveListVeiculos(this, listaExistente);
-
-            VeiculoModel.imprimirSaida(impressora.getOutputStream(), this, sharedPreferences, listaExistente.get(indexGlobal));
-            Toast.makeText(this, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
-        } finally {
-            view.setEnabled(true);
-            impressora.close();
-        }
+//        listaExistente.get(indexGlobal).setStatus("Concluído");
+//        listaExistente.get(indexGlobal).setDataSaida(dataConclusao);
+//        listaExistente.get(indexGlobal).setValorTempoPago(tempoEPreco);
+//
+//        Log.d("mayara", listaExistente.get(indexGlobal).toString());
+//        try {
+//            view.setEnabled(false);
+//            VeiculoUtils.saveListVeiculos(this, listaExistente);
+//            VeiculoModel.imprimirSaida(impressora.getOutputStream(), this, sharedPreferences, listaExistente.get(indexGlobal));
+//            Toast.makeText(this, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
+//        } finally {
+//            view.setEnabled(true);
+//            impressora.close();
+//        }
     }
 
     @SuppressLint("MissingPermission")
