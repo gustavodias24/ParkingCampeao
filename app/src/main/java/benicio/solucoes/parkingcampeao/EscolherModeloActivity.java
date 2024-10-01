@@ -42,9 +42,10 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
 
         .OnClickListener {
 
+    private VeiculoModel veiculoSelecionadoSaida = null;
+
     private static final int REQUEST_ENABLE_BT = 100;
     private BluetoothDevice printerBluetooth;
-    int indexGlobal;
     private ActivityEscolherModeloBinding mainBinding;
     private String tipo = "";
     List<VeiculoModel> listaExistente;
@@ -59,7 +60,6 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
         mainBinding = ActivityEscolherModeloBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
-        listaExistente = VeiculoUtils.returnListVeiculos(this);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -82,11 +82,11 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                 Intent i = new Intent(this, RecolherDadoActivity.class);
 
                 for (int index = 0; index < listaExistente.size(); index++) {
-                    indexGlobal = index;
+
                     VeiculoModel veiculoPlaca = listaExistente.get(index);
 
                     if (veiculoPlaca.getPlaca().equals(placa) && veiculoPlaca.getStatus().equals("Pendente")) {
-
+                        veiculoSelecionadoSaida = veiculoPlaca;
                         prosseguir = false;
 
                         AlertDialog.Builder b = new AlertDialog.Builder(EscolherModeloActivity.this);
@@ -111,7 +111,7 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
                     if (!tipo.isEmpty()) {
                         i.putExtra("tipo", tipo);
                         i.putExtra("placa", placa);
-                        finish();
+                        mainBinding.inputPlaca.setText("");
                         startActivity(i);
                     } else {
                         Toast.makeText(this, "Escolha um tipo de veículo", Toast.LENGTH_SHORT).show();
@@ -139,24 +139,28 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
 
         impressora.connect();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
-        @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
-        String tempoEPreco = VeiculoModel.calcularTempoEPreco(listaExistente.get(indexGlobal).getDataEntrada(), dataConclusao, sharedPreferences, listaExistente.get(indexGlobal));
 
-//        listaExistente.get(indexGlobal).setStatus("Concluído");
-//        listaExistente.get(indexGlobal).setDataSaida(dataConclusao);
-//        listaExistente.get(indexGlobal).setValorTempoPago(tempoEPreco);
-//
-//        Log.d("mayara", listaExistente.get(indexGlobal).toString());
-//        try {
-//            view.setEnabled(false);
-//            VeiculoUtils.saveListVeiculos(this, listaExistente);
-//            VeiculoModel.imprimirSaida(impressora.getOutputStream(), this, sharedPreferences, listaExistente.get(indexGlobal));
-//            Toast.makeText(this, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
-//        } finally {
-//            view.setEnabled(true);
-//            impressora.close();
-//        }
+        veiculoSelecionadoSaida.setStatus("Concluído");
+        @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
+        veiculoSelecionadoSaida.setDataSaida(dataConclusao);
+
+        Log.d("mayara", veiculoSelecionadoSaida.toString());
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
+        String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoSelecionadoSaida.getDataEntrada(), dataConclusao, sharedPreferences, veiculoSelecionadoSaida);
+
+        veiculoSelecionadoSaida.setValorTempoPago(tempoEPreco);
+
+        try {
+            view.setEnabled(false);
+            VeiculoUtils.saveListVeiculos(this, listaExistente);
+            VeiculoModel.imprimirSaida(impressora.getOutputStream(), this, sharedPreferences, veiculoSelecionadoSaida);
+            Toast.makeText(this, "Concluído " + dataConclusao, Toast.LENGTH_SHORT).show();
+        } finally {
+            view.setEnabled(true);
+            impressora.close();
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -205,5 +209,11 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
             tipo = "Carreta";
             mainBinding.veiculoSelecionado.setImageResource(R.drawable.carreta);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listaExistente = VeiculoUtils.returnListVeiculos(this);
     }
 }

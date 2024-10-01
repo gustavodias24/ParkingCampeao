@@ -134,6 +134,7 @@ public class EscPosBase {
         return EscPosBase.RESET_PRINTER;
     }
 
+
 //    protected static byte[] getFontSmall() {
 //        return EscPosBase.TEXT_SIZE_SMALL;
 //    }

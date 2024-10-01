@@ -164,7 +164,7 @@ public class RecolherDadoActivity extends AppCompatActivity {
             VeiculoUtils.saveListVeiculos(this, listaVeiculos);
             Toast.makeText(this, "Veículo cadastrado", Toast.LENGTH_SHORT).show();
             finish();
-            startActivity(new Intent(this, ListVeiculosActivity.class));
+
         } finally {
             view.setEnabled(true);
             impressora.close();
