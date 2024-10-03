@@ -492,7 +492,7 @@ public class VeiculoModel {
     public float getValorPago() {
         // Extrai o valor do campo valorTempoPago
         try {
-            String valorStr = valorTempoPago.split("\n")[1].split(" ")[4].replace(",", ".");
+            String valorStr = valorTempoPago.split("\n")[2].split(":")[1].replace(",", ".");
             return Float.parseFloat(valorStr);
         } catch (Exception e) {
             return 0;

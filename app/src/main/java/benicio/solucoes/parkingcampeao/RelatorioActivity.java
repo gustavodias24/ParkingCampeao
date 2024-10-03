@@ -151,15 +151,19 @@ public class RelatorioActivity extends AppCompatActivity {
                         .collect(Collectors.groupingBy(VeiculoModel::getTipo, Collectors.counting()));
 
                 // 2. Somar o valor pago por cada tipo de veículo
+                for ( VeiculoModel veiculoModel : veiculosFiltrados){
+                    Log.d("mayara", veiculoModel.getTipo() + " tipo: " + veiculoModel.getValorPago());
+                    Log.d("mayara", " valor real: " + veiculoModel.getValorTempoPago());
+                }
                 Map<String, Double> valorPorTipo = veiculosFiltrados.stream()
                         .collect(Collectors.groupingBy(VeiculoModel::getTipo, Collectors.summingDouble(VeiculoModel::getValorPago)));
 
                 // 3. Contar quantas vezes cada placa apareceu e quanto gastou
-                Map<String, Long> placaCount = veiculosFiltrados.stream()
-                        .collect(Collectors.groupingBy(VeiculoModel::getPlaca, Collectors.counting()));
-
-                Map<String, Double> valorPorPlaca = veiculosFiltrados.stream()
-                        .collect(Collectors.groupingBy(VeiculoModel::getPlaca, Collectors.summingDouble(VeiculoModel::getValorPago)));
+//                Map<String, Long> placaCount = veiculosFiltrados.stream()
+//                        .collect(Collectors.groupingBy(VeiculoModel::getPlaca, Collectors.counting()));
+//
+//                Map<String, Double> valorPorPlaca = veiculosFiltrados.stream()
+//                        .collect(Collectors.groupingBy(VeiculoModel::getPlaca, Collectors.summingDouble(VeiculoModel::getValorPago)));
 
                 // 4. Contar quantas vezes foi "diaria", "mensalidade" ou "cobrarMenos" e somar os valores
                 long diariaCount = veiculosFiltrados.stream().filter(VeiculoModel::isDiaria).count();
@@ -168,9 +172,6 @@ public class RelatorioActivity extends AppCompatActivity {
                 long mensalidadeCount = veiculosFiltrados.stream().filter(VeiculoModel::isMensalidade).count();
                 float mensalidadeValor = veiculosFiltrados.stream().filter(VeiculoModel::isMensalidade).map(VeiculoModel::getValorPago).reduce(0f, Float::sum);
 
-                long cobrarMenosCount = veiculosFiltrados.stream().filter(VeiculoModel::isCobrarMenos).count();
-                float cobrarMenosValor = veiculosFiltrados.stream().filter(VeiculoModel::isCobrarMenos).map(VeiculoModel::getValorPago).reduce(0f, Float::sum);
-
                 Map<String, Long> veiculosPendentesPorTipo = VeiculoUtils.returnListVeiculos(this).stream()
                         .filter(veiculo -> veiculo.getStatus().equals("Pendente")) // Filtro pelo status "Pendente"
                         .collect(Collectors.groupingBy(VeiculoModel::getTipo, Collectors.counting())); // Agrupar por tipo e contar
@@ -178,14 +179,16 @@ public class RelatorioActivity extends AppCompatActivity {
 
                 StringBuilder infoBuilder = new StringBuilder();
 
-                infoBuilder.append("<b>Veículos por tipo:</b>").append("<br>");
-                veiculosPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
+                infoBuilder.append("<br><b>Valor gasto por tipo de veículo:</b>").append("<br>");
+                valorPorTipo.forEach((tipo, valor) -> infoBuilder.append(tipo).append(": R$ ").append(valor).append("<br>"));
+
+//                infoBuilder.append("<b>Veículos por tipo:</b>").append("<br>");
+//                veiculosPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
 
                 infoBuilder.append("<br><b>Veículos que não saíram por tipo:</b>").append("<br>");
                 veiculosPendentesPorTipo.forEach((tipo, count) -> infoBuilder.append(tipo).append(": ").append(count).append("<br>"));
 
-//                infoBuilder.append("<br><b>Valor gasto por tipo de veículo:</b>").append("<br>");
-//                valorPorTipo.forEach((tipo, valor) -> infoBuilder.append(tipo).append(": R$ ").append(valor).append("<br>"));
+
 
 //                infoBuilder.append("<br><b>Contagem e valor por placa:</b>").append("<br>");
 //                placaCount.forEach((placa, count) -> infoBuilder.append(placa).append(": ").append(count)
