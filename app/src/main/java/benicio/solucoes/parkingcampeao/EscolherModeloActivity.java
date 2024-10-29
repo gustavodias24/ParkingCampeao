@@ -144,13 +144,20 @@ public class EscolherModeloActivity extends AppCompatActivity implements View
         @SuppressLint("SimpleDateFormat") String dataConclusao = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
         veiculoSelecionadoSaida.setDataSaida(dataConclusao);
 
+
         Log.d("mayara", veiculoSelecionadoSaida.toString());
 
-
         SharedPreferences sharedPreferences = getSharedPreferences("prefs_empresa", Context.MODE_PRIVATE);
-        String tempoEPreco = VeiculoModel.calcularTempoEPreco(veiculoSelecionadoSaida.getDataEntrada(), dataConclusao, sharedPreferences, veiculoSelecionadoSaida);
+        String tempoEPreco = VeiculoModel.calcularTempoEPreco(
+                veiculoSelecionadoSaida.getDataEntrada(),
+                dataConclusao,
+                sharedPreferences,
+                veiculoSelecionadoSaida
+        );
 
         veiculoSelecionadoSaida.setValorTempoPago(tempoEPreco);
+
+        Log.d("mayara", "tempo pago: " + veiculoSelecionadoSaida.getValorTempoPago());
 
         try {
             view.setEnabled(false);

@@ -78,10 +78,15 @@ public class ConfigurarValorActivity extends AppCompatActivity {
     }
 
     private void configurarValoresInInput() {
-        mainBinding.inputDiaria.setText(sharedPreferences.getString(valorDiarioString, ""));
-        mainBinding.inputMeiaHora.setText(sharedPreferences.getString(valorMeiaHoraString, ""));
-        mainBinding.inputHora.setText(sharedPreferences.getString(valorHoraString, ""));
-        mainBinding.inputExcedente.setText(sharedPreferences.getString(valorExcedenteString, ""));
-        mainBinding.inputMensalista.setText(sharedPreferences.getString(valorMensalString, ""));
+        String valorDiaria = sharedPreferences.getString(valorDiarioString, "0");
+        mainBinding.inputDiaria.setText(valorDiaria.isEmpty() ? "0" : valorDiaria);
+        String valorMeiaHora = sharedPreferences.getString(valorMeiaHoraString, "0");
+        mainBinding.inputMeiaHora.setText(valorMeiaHora.isEmpty() ? "0" : valorMeiaHora);
+        String valorHora = sharedPreferences.getString(valorHoraString, "0");
+        mainBinding.inputHora.setText(valorHora.isEmpty() ? "0" : valorHora);
+        String valorExcedente = sharedPreferences.getString(valorExcedenteString, "0");
+        mainBinding.inputExcedente.setText(valorExcedente.isEmpty() ? "0" : valorExcedente);
+        String valorMensalista = sharedPreferences.getString(valorMensalString, "0");
+        mainBinding.inputMensalista.setText(valorMensalista.isEmpty() ? "0" : valorMensalista);
     }
 }

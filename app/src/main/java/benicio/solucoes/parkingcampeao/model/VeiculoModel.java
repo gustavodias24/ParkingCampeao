@@ -260,10 +260,17 @@ public class VeiculoModel {
     public static String calcularTempoEPreco(String entrada, String saida, SharedPreferences sharedPreferences, VeiculoModel veiculoModel) {
 
         String valor_mensal = sharedPreferences.getString(veiculoModel.valorMensalString + veiculoModel.getTipo(), "0").replace(",", ".");
+        if (valor_mensal.isEmpty())
+            valor_mensal = "0";
         String valor_dario = sharedPreferences.getString(veiculoModel.valorDiarioString + veiculoModel.getTipo(), "0").replace(",", ".");
+        if (valor_dario.isEmpty())
+            valor_dario = "0";
         String valor_hora = sharedPreferences.getString(veiculoModel.valorHoraString + veiculoModel.getTipo(), "0").replace(",", ".");
+        if (valor_hora.isEmpty())
+            valor_hora = "0";
         String valor_meia_hora = sharedPreferences.getString(veiculoModel.valorMeiaHoraString + veiculoModel.getTipo(), "0").replace(",", ".");
-
+        if (valor_meia_hora.isEmpty())
+            valor_meia_hora = "0";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         // Parse das strings de entrada e saída para LocalDateTime
@@ -326,7 +333,18 @@ public class VeiculoModel {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static double calcularCobranca(Duration duracao, float tolerancia, float valorMensal,
                                           float valorDiario, float valorHora, float valorMeiaHora) {
-        // Verifica se a duração é de um minuto ou menos
+        // Substitui valores se estiverem configurados como zero
+        if (valorMensal == 0) {
+            valorMensal = 30 * 24 * valorHora; // Mensal calculado com base em 30 dias
+        }
+        if (valorDiario == 0) {
+            valorDiario = 24 * valorHora; // Diário calculado com base em 24 horas
+        }
+        if (valorMeiaHora == 0) {
+            valorMeiaHora = valorHora; // Meia-hora igual ao valor hora
+        }
+
+        // Verifica se a duração é de um minuto ou menos (tolerância)
         if (duracao.toMinutes() <= tolerancia) {
             return 0.0;
         }
@@ -360,7 +378,7 @@ public class VeiculoModel {
 
         // Para durações que excedem a tolerância mas são menores que 30 minutos
         if (minutosEfetivos > 0) {
-            return valorMeiaHora; // Cobrar 3,50 reais por meia hora
+            return valorMeiaHora;
         }
 
         return 0.0;
